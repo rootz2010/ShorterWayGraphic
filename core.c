@@ -14,6 +14,21 @@ struct chained_list {
 	struct chained_list * next;
 };
 
+/* function to create a table of predecessors */
+int ** genereate_predecessor(int nb_nodes) {
+	int i;
+	/*We create a structure to enter the list of predecessors with their weight*/
+	int **predecessor = (int **) calloc(nb_nodes, sizeof(unsigned long int *));
+	/* For each row in row[0] we will store the weight and in row[1] we will store the predecessor */
+	for (i=0; i<nb_nodes; i++) {
+		predecessor[i] = (int *) calloc(2, sizeof(unsigned long int));
+		predecessor[i][0] = INT_MAX;
+		predecessor[i][1] = INT_MAX;
+	}
+	
+	return predecessor;
+}
+
 /* function to generate a random graph */
 int ** random_graph(int nb_nodes, float completeness) {
 	
@@ -119,4 +134,9 @@ void free_matrix(int ** matrix, int nb_nodes) {
 	}
 	free(matrix);
 	printf("matrix memory free\n");
+}
+
+/* function to find the shorter way in a graph using bellman-ford */
+int** bellman_ford_matrix(int ** matrix,int nb_nodes, int depart) {
+	
 }
