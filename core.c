@@ -15,15 +15,22 @@ struct chained_list {
 };
 
 /* function to create a table of predecessors */
-int ** genereate_predecessor(int nb_nodes) {
+int ** genereate_predecessor(int nb_nodes, int depart) {
 	int i;
 	/*We create a structure to enter the list of predecessors with their weight*/
 	int **predecessor = (int **) calloc(nb_nodes, sizeof(unsigned long int *));
 	/* For each row in row[0] we will store the weight and in row[1] we will store the predecessor */
 	for (i=0; i<nb_nodes; i++) {
 		predecessor[i] = (int *) calloc(2, sizeof(unsigned long int));
-		predecessor[i][0] = INT_MAX;
-		predecessor[i][1] = INT_MAX;
+		if(i==depart) {
+			predecessor[i][0] = 0;
+			predecessor[i][1] = INT_MAX;
+		}
+		else {
+			predecessor[i][0] = INT_MAX;
+			predecessor[i][1] = INT_MAX;
+		}
+
 	}
 	
 	return predecessor;
@@ -138,5 +145,16 @@ void free_matrix(int ** matrix, int nb_nodes) {
 
 /* function to find the shorter way in a graph using bellman-ford */
 int** bellman_ford_matrix(int ** matrix,int nb_nodes, int depart) {
-	
+	int i,j;
+	int ** predecessor;
+	int compteur;
+	/*Initialization of the variables*/
+	compteur = INT_MAX;
+	predecessor = genereate_predecessor(nb_nodes);
+	/*While the table of predecessors is not modified we run the code*/
+	while(compteur) {
+		compteur = 0;
+		/*We go through the matrix by column to get the list of successors*/
+		
+	}
 }
