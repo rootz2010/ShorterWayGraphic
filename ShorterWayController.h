@@ -15,6 +15,7 @@
 	int nbNodes;
 	float complet;
 	int ** matrix;
+	int ** predecessor;
 	
 	/*User entries*/
 	IBOutlet NSTextField * numberOfNodes;
