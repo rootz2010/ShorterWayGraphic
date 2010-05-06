@@ -150,11 +150,29 @@ int** bellman_ford_matrix(int ** matrix,int nb_nodes, int depart) {
 	int compteur;
 	/*Initialization of the variables*/
 	compteur = INT_MAX;
-	predecessor = genereate_predecessor(nb_nodes);
+	predecessor = genereate_predecessor(nb_nodes, depart);
 	/*While the table of predecessors is not modified we run the code*/
 	while(compteur) {
 		compteur = 0;
 		/*We go through the matrix by column to get the list of successors*/
-		
+		for (j=0; j<nb_nodes; j++) {
+			for (i=0; i<nb_nodes; i++) {
+				/*We add this to prevent an int overflow*/
+				if (predecessor[i][0] != INT_MAX) {
+					/*If the lenght to reach a node is superior to the length to reach one of his
+					 predecessor plus the length of the edge to go from the predecessor to the node
+					 then it is a shorter way so we change the predecessor of the node and the value
+					 to reach the node.*/
+					int new_length;
+					new_length = predecessor[i][0]+matrix[i][j];
+					if (predecessor[j][0] >= new_length) {
+						predecessor[j][0] = new_length;
+						predecessor[j][1] = i;
+						compteur++;
+					}
+				}
+			}
+		} 
 	}
+	return predecessor;
 }
