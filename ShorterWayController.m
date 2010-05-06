@@ -31,10 +31,30 @@
 /*This function is called by the solve button*/
 -(IBAction)solve:(id)sender {
 	[self addLineWithPrompt:@"Looking for the shortest way"];
+	predecessor = bellman_ford_matrix(matrix, nbNodes, 0);
+	[self displayPredecessor:predecessor withSize:nbNodes];
 }
 
 /*Display functions*/
 
+/*Function to display the predecessors*/
+-(void)displayPredecessor:(int **)mat withSize:(int)size {
+	int i, j;
+	NSMutableString * line;
+	for (i=0; i<size; i++) {
+		line = [NSMutableString stringWithString:@""];
+		for (j=0; j<2; j++) {
+			int value = mat[i][j];
+			if(value == INT_MAX) {
+				[line appendString:@"-- "];
+			}
+			else [line appendFormat:@"%-2d ", mat[i][j]];
+		}
+		[self addLineWithoutPrompt:line];
+	}
+}
+
+	 
 /*Function to display the matrix of a graph*/
 -(void)displayMatrix:(int **)mat withSize:(int)size {
 	int i, j;
