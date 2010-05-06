@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'ShorterWayGraphic' target in the 'ShorterWayGraphic' project
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
