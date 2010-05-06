@@ -11,3 +11,6 @@ struct chained_list ** convert_matrix(int ** tab, int nb_nodes);
 void free_list(struct chained_list ** list, int nb_nodes);
 /*function to free a matrix*/
 void free_matrix(int ** matrix, int nb_nodes);
+
+/* function to find the shorter way using dantzig */
+int*** dantzig_matrix(int ** matrix, int nb_nodes);
