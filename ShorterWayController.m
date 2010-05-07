@@ -31,8 +31,10 @@
 /*This function is called by the solve button*/
 -(IBAction)solve:(id)sender {
 	[self addLineWithPrompt:@"Looking for the shortest way"];
-	predecessor = bellman_ford_matrix(matrix, nbNodes, 0);
-	[self displayPredecessor:predecessor withSize:nbNodes];
+	//predecessor = bellman_ford_matrix(matrix, nbNodes, 0);
+	//[self displayPredecessor:predecessor withSize:nbNodes];
+	int *** mouche = dantzig_matrix(matrix, nbNodes);
+	[self displayDantzigMatrix:mouche withSize:nbNodes];
 }
 
 /*Display functions*/
@@ -67,6 +69,28 @@
 				[line appendString:@"-- "];
 			}
 			else [line appendFormat:@"%-2d ", mat[i][j]];
+		}
+		[self addLineWithoutPrompt:line];
+	}
+}
+
+/* function to display the matrix resulted */
+-(void)displayDantzigMatrix:(int ***)mat withSize:(int)size {
+	int i,j;
+	NSMutableString * line;
+	for (i=0; i<size; i++) {
+		line = [NSMutableString stringWithString:@""];
+		for (j=0; j<size; j++) {
+			[line appendFormat:@"%-2d ", mat[i][j][1]];
+		}
+		[self addLineWithoutPrompt:line];
+		line = [NSMutableString stringWithString:@""];
+		for (j=0; j<size; j++) {
+			int value = mat[i][j][0];
+			if (value == INT_MAX) {
+				[line appendString:@"-- "];
+			}
+			else [line appendFormat:@"%-2d ", value];
 		}
 		[self addLineWithoutPrompt:line];
 	}

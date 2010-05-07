@@ -17,3 +17,6 @@ int*** dantzig_matrix(int ** matrix, int nb_nodes);
 
 /*bellman ford algorithm*/
 int** bellman_ford_matrix(int ** matrix,int nb_nodes, int depart);
+
+/* function useful when debugging : redirection of stderror to a file */
+FILE* open_log();
