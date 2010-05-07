@@ -256,7 +256,7 @@
 		fRef = 4387BA5E117C9C5B00A1F390 /* core.c */;
 		name = "core.c: 267";
 		rLen = 18;
-		rLoc = 7737;
+		rLoc = 7723;
 		rType = 0;
 		vrLen = 1276;
 		vrLoc = 6895;
@@ -320,17 +320,17 @@
 	};
 	4387BA5D117C9C5B00A1F390 /* core.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {963, 221}}";
-			sepNavSelRange = "{762, 0}";
-			sepNavVisRange = "{241, 521}";
+			sepNavIntBoundsRect = "{{0, 0}, {624, 566}}";
+			sepNavSelRange = "{869, 0}";
+			sepNavVisRange = "{0, 869}";
 			sepNavWindowFrame = "{{417, -177}, {1214, 774}}";
 		};
 	};
 	4387BA5E117C9C5B00A1F390 /* core.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {963, 3692}}";
-			sepNavSelRange = "{7681, 22}";
-			sepNavVisRange = "{7681, 359}";
+			sepNavIntBoundsRect = "{{0, 0}, {762, 4836}}";
+			sepNavSelRange = "{10960, 0}";
+			sepNavVisRange = "{1379, 1417}";
 			sepNavWindowFrame = "{{66, 4}, {1214, 746}}";
 		};
 	};

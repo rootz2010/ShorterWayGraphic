@@ -9,7 +9,7 @@
 
 /* simple data structure : chained-list containing the number of the nodes */
 struct chained_list {
-	unsigned long int number;
+	int number;
 	int value;
 	struct chained_list * next;
 };
@@ -18,10 +18,10 @@ struct chained_list {
 int ** generate_predecessor(int nb_nodes, int depart) {
 	int i;
 	/*We create a structure to enter the list of predecessors with their weight*/
-	int **predecessor = (int **) calloc(nb_nodes, sizeof(unsigned long int *));
+	int **predecessor = (int **) calloc(nb_nodes, sizeof(int *));
 	/* For each row in row[0] we will store the weight and in row[1] we will store the predecessor */
 	for (i=0; i<nb_nodes; i++) {
-		predecessor[i] = (int *) calloc(2, sizeof(unsigned long int));
+		predecessor[i] = (int *) calloc(2, sizeof(int));
 		if(i==depart) {
 			predecessor[i][0] = 0;
 			predecessor[i][1] = INT_MAX;
@@ -39,16 +39,16 @@ int ** generate_predecessor(int nb_nodes, int depart) {
 /* function to generate a random graph */
 int ** random_graph(int nb_nodes, float completeness) {
 	
-	unsigned long int i, j;
+	int i, j;
 	
-	int **tableau = (int **) calloc(nb_nodes, sizeof(unsigned long int *));
+	int **tableau = (int **) calloc(nb_nodes, sizeof(int *));
 	
 	/* just to have a different configuration each time  */
     srand(time((time_t *)0));
 	
 	/* allocate space for our little matrix */
 	for (i=0; i<nb_nodes; i++) {
-		tableau[i] = (int *) calloc(nb_nodes, sizeof(unsigned long int));
+		tableau[i] = (int *) calloc(nb_nodes, sizeof(int));
 	}
 	
 	/* generate random arc with its value */
@@ -76,7 +76,7 @@ int ** random_graph(int nb_nodes, float completeness) {
 
 /* function to convert a matrix into a chained list */
 struct chained_list ** convert_matrix(int ** tab, int nb_nodes) {
-	unsigned long int i, j;
+	int i, j;
 	struct chained_list * pointer;
 	
 	/* we allocate nb_nodes cells for the chained list tab */
@@ -112,7 +112,7 @@ struct chained_list ** convert_matrix(int ** tab, int nb_nodes) {
 
 /* function to free a chained_list */
 void free_list(struct chained_list ** list, int nb_nodes) {
-	unsigned long int i;
+	int i;
 	
 	struct chained_list * pointer;
 	struct chained_list * tmp;
@@ -135,7 +135,7 @@ void free_list(struct chained_list ** list, int nb_nodes) {
 
 /* function to free a matrix, not so complicated */
 void free_matrix(int ** matrix, int nb_nodes) {
-	unsigned long int i;
+	int i;
 	for (i=0; i<nb_nodes; i++) {
 		free(matrix[i]);
 	}
@@ -184,7 +184,6 @@ int** bellman_ford_matrix(int ** matrix,int nb_nodes, int depart) {
 	}
 	return predecessor;
 }
-
 
 /******************************************************************/
 /**********************DIJKSTRA************************************/
@@ -279,4 +278,86 @@ int ** dijkstra_matrix(int ** matrix, int nb_nodes, int depart) {
 		to_visit = remove_node(to_visit, node_min);
 	}
 	return predecessor;
+}
+
+
+/* function to find the shorter way between all nodes in a graph using dantzig */
+int*** dantzig_matrix(int ** matrix, int nb_nodes) {
+	int i,j, k;
+	int circuit, length;
+	k = 1;
+	circuit = 0;
+	
+	/* we need to initialise the matrix which will be given as output */
+	int*** output_matrix = (int ***) calloc(nb_nodes, sizeof(int **));
+	/* the output_matrix stores in a three dimension graph the predecessor of the node j to
+	 * go to the node i, with the distance between i and j */
+	for (i=1; i<nb_nodes; i++) {
+		output_matrix[i] = (int **) calloc(nb_nodes, sizeof(int *));
+		for (j=1; j<nb_nodes; j++) {
+			/* For each row in row[0] we will store the weight and in row[1] we will store 
+			 * the predecessor */
+			output_matrix[i][j] = (int *) calloc(2, sizeof(int *));
+			if (j!=i) {
+				output_matrix[i][j][0] = 0;
+				output_matrix[i][j][1] = INT_MAX; /* we didn't evaluate the cost yet */
+			}
+			/* on the diagonal */
+			else {
+				output_matrix[i][j][0] = i;
+				output_matrix[i][j][1] = 0; /* no cost to go from i to i */
+			}
+		}
+	}
+	
+	/* evaluation of the distances between the nodes : we grow the matrix starting from a 
+	 * small graph to finish with the whole graph */
+	while (k < nb_nodes && !circuit) { /* counter to increment the graph */
+		i = 1;
+		while (i <= k && !circuit) { /* counter to increment the initial node */
+			for (j=1; j<=k; j++) { /* counter to increment the destination node */
+				/* calculation of the length between node i and node k+1 : we know the distance
+				 * between all the nodes at the rank k, and we want to visit the k+1 node :
+				 * the algorithm tests all the nodes of arrival until k, and try to minimize
+				 * the distance between i and j */
+				length = output_matrix[i][j][0] + matrix[j][k+1];
+				if (length < output_matrix[i][j][0]) {
+					output_matrix[i][k+1][0] = length;
+					output_matrix[i][k+1][1] = j;
+				}
+				/*  calculation in the other direction */
+				length = output_matrix[j][i][0] + matrix[k+1][j];
+	 			if (length < output_matrix[k+1][i][0]) {
+					output_matrix[k+1][i][0] = length;
+					if (i == j) {
+						output_matrix[k+1][i][1] =  k+1;
+					}
+					else {
+						output_matrix[k+1][i][1] = output_matrix[j][i][1];
+					}
+				}
+			}
+			/* if the distance between k+1 and i plus the one in the other direction is < 0 */
+			if (output_matrix[k+1][i][0] + output_matrix[i][k+1][0] < 0) {
+				/* we have a circuit */
+				circuit = 1;
+			}
+			i++;
+		}
+		/* optimization of the matrix */
+		if (!circuit) {
+			for (i=1;i<=k;i++) {
+				for (j=1;j<=k;j++) {
+					/* we calculate again the distance, to find a new minimum if possible */
+					length = output_matrix[i][k+1][0] + output_matrix[k+1][j][0];
+					if (length < output_matrix[i][j][1]) {
+						/* if so, we have to replace the corresponding cell */
+						output_matrix[i][j][0] = length;
+						output_matrix[i][j][1] = output_matrix[k+1][j][1];
+					}
+				}
+			}
+		}
+	}
+	return output_matrix;
 }
