@@ -15,7 +15,7 @@ struct chained_list {
 };
 
 /* function to create a table of predecessors */
-int ** genereate_predecessor(int nb_nodes, int depart) {
+int ** generate_predecessor(int nb_nodes, int depart) {
 	int i;
 	/*We create a structure to enter the list of predecessors with their weight*/
 	int **predecessor = (int **) calloc(nb_nodes, sizeof(int *));
@@ -143,6 +143,10 @@ void free_matrix(int ** matrix, int nb_nodes) {
 	printf("matrix memory free\n");
 }
 
+/******************************************************************/
+/**********************BELLMAN FORD********************************/
+/******************************************************************/
+
 /* function to find the shorter way in a graph using bellman-ford */
 int** bellman_ford_matrix(int ** matrix,int nb_nodes, int depart) {
 	int i,j;
@@ -150,21 +154,24 @@ int** bellman_ford_matrix(int ** matrix,int nb_nodes, int depart) {
 	int compteur;
 	/*Initialization of the variables*/
 	compteur = INT_MAX;
-	predecessor = genereate_predecessor(nb_nodes, depart);
+	predecessor = generate_predecessor(nb_nodes, depart);
 	/*While the table of predecessors is not modified we run the code*/
 	while(compteur) {
 		compteur = 0;
 		/*We go through the matrix by column to get the list of successors*/
 		for (j=0; j<nb_nodes; j++) {
 			for (i=0; i<nb_nodes; i++) {
+				int pred, edge_weight; 
+				pred = predecessor[i][0];
+				edge_weight = matrix[i][j];
 				/*We add this to prevent an int overflow and evaluate only the part where an hedge exists*/
-				if (predecessor[i][0] != INT_MAX && j!=i && matrix[i][j] != INT_MAX) {
+				if (pred != INT_MAX && j!=i && edge_weight != INT_MAX) {
 					/*If the lenght to reach a node is superior to the length to reach one of his
 					 predecessor plus the length of the edge to go from the predecessor to the node
 					 then it is a shorter way so we change the predecessor of the node and the value
 					 to reach the node.*/
 					int new_length;
-					new_length = predecessor[i][0]+matrix[i][j];
+					new_length = pred+edge_weight;
 					if (predecessor[j][0] > new_length) {
 						//Add a check for negative cycles
 						predecessor[j][0] = new_length;
@@ -178,9 +185,108 @@ int** bellman_ford_matrix(int ** matrix,int nb_nodes, int depart) {
 	return predecessor;
 }
 
+/******************************************************************/
+/**********************DIJKSTRA************************************/
+/******************************************************************/
+
+/*Function to generate a list of nodes to visit from a table of predecessors*/
+struct chained_list * nodes_to_visit(int ** predecessor, int nb_nodes) {
+	int i;
+	struct chained_list * head;
+	struct chained_list * cursor;
+	head = (struct chained_list *) malloc(sizeof(struct chained_list));
+	head->number = 0;
+	head->value = predecessor[0][0];
+	cursor = head;
+	for(i=0; i<nb_nodes-1; i++) {
+		cursor->next = (struct chained_list *) malloc(sizeof(struct chained_list));
+		cursor->next->number = i+1;
+		cursor->next->value = predecessor[i+1][0];
+		cursor = cursor->next;
+	}
+	cursor->next = NULL;
+	return head;
+}
+
+/*Function to find the node with the minimum weight int the to_visit list*/
+struct chained_list * find_node_min(struct chained_list * head, int ** predecessor) {
+	int min;
+	struct chained_list * node_min;
+	struct chained_list * cursor;
+	min = INT_MAX;
+	cursor = head;
+	while (cursor) {
+		int temp = predecessor[cursor->number][0];
+		if (temp <= min) {
+			min = temp;
+			node_min = cursor;
+		}
+		cursor = cursor->next;
+	}
+	return node_min;
+}
+
+/*Function to remove a node from a list*/
+struct chained_list * remove_node(struct chained_list * head, struct chained_list * node) {
+	struct chained_list * new_head;
+	struct chained_list * cursor;
+	new_head = head;
+	cursor = head;
+	if (node == head) {
+		new_head = head->next;
+		free(node);
+	}
+	else {
+		while(cursor) {
+			if (cursor->next == node) {
+				cursor->next = node->next;
+				free(node);
+			}
+			cursor = cursor->next;
+		}
+	}
+	return new_head;
+}
+
+/*Function to find the shorter way using dijkstra*/
+int ** dijkstra_matrix(int ** matrix, int nb_nodes, int depart) {
+	int i,j;
+	int ** predecessor;
+	int * visited;
+	struct chained_list * to_visit;
+	visited = (int *) calloc(nb_nodes, sizeof(int));
+	predecessor = generate_predecessor(nb_nodes, depart);
+	to_visit  = nodes_to_visit(predecessor, nb_nodes);
+	while(to_visit) {
+		/*We find the node witht the minimum value in the list and we visit it*/
+		struct chained_list * node_min = find_node_min(to_visit, predecessor);
+		/*If the node is connected to the graph we look at all the non visited children*/
+		i=node_min->number;
+		/*We mark the node as visited*/
+		visited[i] = 1;
+		if(predecessor[i][0]!=INT_MAX) {
+			for(j=0; j<nb_nodes; j++) {
+				if (!visited[j]) {
+					if (matrix[i][j] != INT_MAX && i!=j && predecessor[i][0]+matrix[i][j]<predecessor[j][0]) {
+						predecessor[j][0] = predecessor[i][0]+matrix[i][j];
+						predecessor[j][1] = i;
+					}
+				}
+			}
+		}
+		/*We remove the node_min from the to_visit list*/
+		to_visit = remove_node(to_visit, node_min);
+	}
+	return predecessor;
+}
+
+/******************************************************************/
+/**********************BELLMAN FORD********************************/
+/******************************************************************/
+
+/* function to initialize the matrix used as output in the dantzig algorithm */
 int*** dantzig_init_matrix(int nb_nodes) {
 	int i,j;
-	
 	/* we need to initialise the matrix which will be given as output */
 	int*** output_matrix = (int ***) calloc(nb_nodes, sizeof(int **));
 	/* the output_matrix stores in a three dimension graph the predecessor of the node j to

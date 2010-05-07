@@ -20,3 +20,6 @@ int** bellman_ford_matrix(int ** matrix,int nb_nodes, int depart);
 
 /* function useful when debugging : redirection of stderror to a file */
 FILE* open_log();
+
+/*Dikjstra matrix*/
+int ** dijkstra_matrix(int ** matrix, int nb_nodes, int depart);
