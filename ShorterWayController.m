@@ -30,8 +30,15 @@
 
 /*This function is called by the solve button*/
 -(IBAction)solve:(id)sender {
-	[self addLineWithPrompt:@"Looking for the shortest way"];
+	[self addLineWithPrompt:@"Looking for the shortest way bellman"];
 	predecessor = bellman_ford_matrix(matrix, nbNodes, 0);
+	[self displayPredecessor:predecessor withSize:nbNodes];
+	
+	[self addLineWithPrompt:@"Looking for the shortest way dijkstra"];
+	predecessor = dijkstra_matrix(matrix, nbNodes, 0);
+	if(predecessor!=NULL) {
+		NSLog(@"not null");
+	}
 	[self displayPredecessor:predecessor withSize:nbNodes];
 }
 
