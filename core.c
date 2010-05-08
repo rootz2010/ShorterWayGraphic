@@ -7,12 +7,66 @@
 
 #define MAX_LEN 20
 
+/******************************************************************/
+/****************************UTILITIES*****************************/
+/******************************************************************/
+
 /* simple data structure : chained-list containing the number of the nodes */
 struct chained_list {
 	int number;
 	int value;
 	struct chained_list * next;
 };
+
+/* function written for debugging purpose : it redirects stderr to a log file */
+FILE* open_log() {
+	FILE* fp;
+    fp = fopen("shorter_way_graphic.log", "a");
+    time_t todaytime;
+    todaytime = time(NULL);
+    fprintf(fp, ctime(&todaytime));
+    fprintf(fp, "starting shorter way\n");
+	return fp;
+}
+
+/* function to find the shorter way from the predecessor matrix */
+/* the idea of the function is to give back a chained-list readable directly in the right way
+ * we want to display something like departure -(cost)-> "intermediary node" -(cost)-> arrival
+ * so we simply create a chained_list based on this structure
+ * the main issue is that the predecessor matrix is not built to allow the reading in this way,
+ * we have then to make something smart */
+struct chained_list* find_short(int** matrix, int nb_nodes, int departure, int arrival) {
+	int node;
+	struct chained_list * current;
+	struct chained_list * next;
+	
+	/* one pointer on which we work, one pointer which is a backup of the previous current pointer :
+	 * we build the chained_list like this : next <= (current->next) */
+	current = (struct chained_list *) malloc(sizeof(struct chained_list));
+	next  = (struct chained_list *) malloc(sizeof(struct chained_list));
+	
+	node = arrival;
+	
+	do {
+		current -> number = node;
+		current -> value = matrix[node][0];
+		node = matrix[node][1];
+		
+		current -> next = (struct chained_list *) malloc(sizeof(struct chained_list));
+		/* test to avoid trying to access to next which doesn't contain anything 
+		 * during the first step. during this first step the tail must point to nothing*/
+		if (node != arrival) {
+			current -> next = next;
+		}
+		else {
+			current -> next = NULL; /* nothing is also NULL */
+		}
+
+		next = current;
+	} while (node != departure);
+	
+	return current;
+}
 
 /* function to create a table of predecessors */
 int ** generate_predecessor(int nb_nodes, int depart) {
@@ -336,7 +390,8 @@ int*** dantzig_matrix(int ** matrix, int nb_nodes) {
 				 * between all the nodes at the rank k, and we want to visit the k+1 node :
 				 * the algorithm tests all the nodes of arrival until k, and try to minimize
 				 * the distance between i and j */
-				fprintf(file,"i : %d, j : %d\n", i, j);
+				fprintf(file,"i : %d, j : %d  ", i, j);
+				/* (i) -(j)-> (k+1) */
 				/* test to avoid an int overflow */
 				if (output_matrix[i][j][0] != INT_MAX && matrix[j][k+1] !=INT_MAX) {
 					length = output_matrix[i][j][0] + matrix[j][k+1];
@@ -344,21 +399,22 @@ int*** dantzig_matrix(int ** matrix, int nb_nodes) {
 				else {
 					length = INT_MAX;
 				}
-				fprintf(file,"length i -> k+1 : %d\n", length);
-				if (length < output_matrix[i][k+1][0]) {
+				fprintf(file,"length i -> k+1 : %d  ", length);
+				if (length < output_matrix[i][k+1][0]) { /* found a new minimum */
 					output_matrix[i][k+1][0] = length;
 					output_matrix[i][k+1][1] = j;
 				}
 				/*  calculation in the other direction */
+				/* (k+1) -(j)-> i */
 				/* test to avoid an int overflow */
-				if (output_matrix[j][i][0] != INT_MAX && matrix[k+1][j] != INT_MAX) {
+				if (output_matrix[j][i][0] != INT_MAX && matrix[k+1][j] != INT_MAX) { 
 					length = output_matrix[j][i][0] + matrix[k+1][j];
 				}
 				else {
 					length = INT_MAX;
 				}
 				fprintf(file,"length k+1 -> i : %d\n", length);
-	 			if (length < output_matrix[k+1][i][0]) {
+	 			if (length < output_matrix[k+1][i][0]) { /* found a new minimum in the other direction */
 					output_matrix[k+1][i][0] = length;
 					if (i == j) {
 						output_matrix[k+1][i][1] =  k+1;
@@ -381,7 +437,7 @@ int*** dantzig_matrix(int ** matrix, int nb_nodes) {
 		if (circuit == 0) {
 			for (i=0;i<=k;i++) {
 				for (j=0;j<=k;j++) {
-					fprintf(file,"opt : i : %d, j : %d\n", i, j);
+					fprintf(file,"opt : i : %d, j : %d  ", i, j);
 					/* we calculate again the distance, to find a new minimum if possible */
 					/* test to avoid an int overflow */
 					if (output_matrix[i][k+1][0] != INT_MAX && output_matrix[k+1][j][0] != INT_MAX) {
@@ -390,13 +446,14 @@ int*** dantzig_matrix(int ** matrix, int nb_nodes) {
 					else {
 						length = INT_MAX;
 					}
-					fprintf(file,"length i -> k+1 : %d\n", length);
-					if (length < output_matrix[i][j][1]) {
+					fprintf(file,"length i -> k+1 : %d", length);
+					if (length < output_matrix[i][j][0]) {
 						/* if so, we have to replace the corresponding cell */
-						fprintf(file, "looks like we found an optimization !");
+						fprintf(file, "  looks like we found an optimization !");
 						output_matrix[i][j][0] = length;
 						output_matrix[i][j][1] = output_matrix[k+1][j][1];
 					}
+					fprintf(file, "\n");
 				}
 			}
 		}
@@ -408,17 +465,7 @@ int*** dantzig_matrix(int ** matrix, int nb_nodes) {
 	fclose(file);
 	return output_matrix;
 }
-
-/* function to calculate the shorter way from the dantzig matrix */
-
-
-/* function written for debugging purpose : it redirects stderr to a log file */
-FILE* open_log() {
-	FILE* fp;
-    fp = fopen("shorter_way_graphic.log", "a");
-    time_t todaytime;
-    todaytime = time(NULL);
-    fprintf(fp, ctime(&todaytime));
-    fprintf(fp, "starting shorter way\n");
-	return fp;
+/* function to extract from the dantzig matrix a predecessor matrix corresponding to a given node */
+int ** dantzig_extract_predecessor(int*** matrix, int node) {
+	return matrix[node];
 }

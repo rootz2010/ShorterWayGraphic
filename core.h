@@ -1,7 +1,7 @@
 /* simple data structure : chained-list containing the number of nodes */
 struct chained_list;
-/*
- * Function to generate a random graph, this graph has a matrix form
+
+/* Function to generate a random graph, this graph has a matrix form
  * if you want to have achained list form use the convert_matrix function
  */
 int ** random_graph(int nb_nodes, float completeness);
@@ -14,6 +14,8 @@ void free_matrix(int ** matrix, int nb_nodes);
 
 /* function to find the shorter way using dantzig */
 int*** dantzig_matrix(int ** matrix, int nb_nodes);
+int*** dantzig_init_matrix(int nb_nodes);
+int ** dantzig_extract_predecessor(int*** matrix, int nb_nodes);
 
 /*bellman ford algorithm*/
 int** bellman_ford_matrix(int ** matrix,int nb_nodes, int depart);
@@ -22,4 +24,7 @@ int** bellman_ford_matrix(int ** matrix,int nb_nodes, int depart);
 FILE* open_log();
 
 /*Dikjstra matrix*/
-int ** dijkstra_matrix(int ** matrix, int nb_nodes, int depart);
+int** dijkstra_matrix(int ** matrix, int nb_nodes, int depart);
+
+/* function to find the shorter way from the predecessor matrix */
+struct chained_list* find_short(int** matrix, int nb_nodes, int departure, int arrival);
