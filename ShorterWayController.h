@@ -15,13 +15,29 @@
 	int nbNodes;
 	float complet;
 	int ** matrix;
+	
+	/*Predecessor for the different algorithms*/
+	int ** predecessorFord;
+	int ** predecessorDijkstra;
+	int ** predecessorDantzig;
+	
 	int ** predecessor;
 	
-	/*User entries*/
+	/*User entries Graph*/
 	IBOutlet NSTextField * numberOfNodes;
+	
+	/*User entries computation*/
 	IBOutlet NSTextField * departure;
 	IBOutlet NSTextField * arrival;
 	IBOutlet NSSlider * completeness;
+	
+	IBOutlet NSTextField * departureFord;
+	IBOutlet NSTextField * arrivalFord;
+	IBOutlet NSTextField * departureDijkstra;
+	IBOutlet NSTextField * arrivalDijkstra;
+	IBOutlet NSTextField * departureDantzig;
+	IBOutlet NSTextField * arrivalDantzig;
+	
 	
 	/*Output*/
 	IBOutlet NSTextView * result;
@@ -38,4 +54,11 @@
 -(IBAction)generate:(id)sender;
 -(IBAction)solve:(id)sender;
 
+/*Actions buttons algorithm*/
+-(IBAction)predFord:(id)sender;
+-(IBAction)solveFord:(id)sender;
+-(IBAction)predDijkstra:(id)sender;
+-(IBAction)solveDijkstra:(id)sender;
+-(IBAction)predDantzig:(id)sender;
+-(IBAction)solveDantzig:(id)sender;
 @end
