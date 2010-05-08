@@ -281,7 +281,7 @@ int ** dijkstra_matrix(int ** matrix, int nb_nodes, int depart) {
 }
 
 /******************************************************************/
-/**********************BELLMAN FORD********************************/
+/***************************DANTZIG********************************/
 /******************************************************************/
 
 /* function to initialize the matrix used as output in the dantzig algorithm */
@@ -408,6 +408,9 @@ int*** dantzig_matrix(int ** matrix, int nb_nodes) {
 	fclose(file);
 	return output_matrix;
 }
+
+/* function to calculate the shorter way from the dantzig matrix */
+
 
 /* function written for debugging purpose : it redirects stderr to a log file */
 FILE* open_log() {
