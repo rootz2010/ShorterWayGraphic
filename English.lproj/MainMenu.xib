@@ -13,7 +13,7 @@
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
 			<integer value="29"/>
-			<integer value="635"/>
+			<integer value="372"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -1599,7 +1599,7 @@
 						<object class="NSButton" id="421639825">
 							<reference key="NSNextResponder" ref="439893737"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{129, 437}, {154, 19}}</string>
+							<string key="NSFrame">{{61, 437}, {93, 19}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="413372836">
@@ -1612,6 +1612,46 @@
 									<int key="NSfFlags">16</int>
 								</object>
 								<reference key="NSControlView" ref="421639825"/>
+								<int key="NSButtonFlags">-2038152961</int>
+								<int key="NSButtonFlags2">164</int>
+								<string key="NSAlternateContents"/>
+								<string key="NSKeyEquivalent"/>
+								<int key="NSPeriodicDelay">400</int>
+								<int key="NSPeriodicInterval">75</int>
+							</object>
+						</object>
+						<object class="NSButton" id="25900555">
+							<reference key="NSNextResponder" ref="439893737"/>
+							<int key="NSvFlags">268</int>
+							<string key="NSFrame">{{162, 437}, {91, 19}}</string>
+							<reference key="NSSuperview" ref="439893737"/>
+							<bool key="NSEnabled">YES</bool>
+							<object class="NSButtonCell" key="NSCell" id="310749856">
+								<int key="NSCellFlags">-2080244224</int>
+								<int key="NSCellFlags2">134217728</int>
+								<string key="NSContents">Import</string>
+								<reference key="NSSupport" ref="1012536800"/>
+								<reference key="NSControlView" ref="25900555"/>
+								<int key="NSButtonFlags">-2038152961</int>
+								<int key="NSButtonFlags2">164</int>
+								<string key="NSAlternateContents"/>
+								<string key="NSKeyEquivalent"/>
+								<int key="NSPeriodicDelay">400</int>
+								<int key="NSPeriodicInterval">75</int>
+							</object>
+						</object>
+						<object class="NSButton" id="786987401">
+							<reference key="NSNextResponder" ref="439893737"/>
+							<int key="NSvFlags">268</int>
+							<string key="NSFrame">{{261, 437}, {90, 19}}</string>
+							<reference key="NSSuperview" ref="439893737"/>
+							<bool key="NSEnabled">YES</bool>
+							<object class="NSButtonCell" key="NSCell" id="1047089989">
+								<int key="NSCellFlags">-2080244224</int>
+								<int key="NSCellFlags2">134217728</int>
+								<string key="NSContents">Export</string>
+								<reference key="NSSupport" ref="1012536800"/>
+								<reference key="NSControlView" ref="786987401"/>
 								<int key="NSButtonFlags">-2038152961</int>
 								<int key="NSButtonFlags2">164</int>
 								<string key="NSAlternateContents"/>
@@ -3410,14 +3450,6 @@
 					<int key="connectionID">599</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">generate:</string>
-						<reference key="source" ref="652633428"/>
-						<reference key="destination" ref="421639825"/>
-					</object>
-					<int key="connectionID">615</int>
-				</object>
-				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">result</string>
 						<reference key="source" ref="652633428"/>
@@ -3426,52 +3458,124 @@
 					<int key="connectionID">627</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBActionConnection" key="connection">
-						<string key="label">solve:</string>
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">departureFord</string>
 						<reference key="source" ref="652633428"/>
-						<reference key="destination" ref="100115818"/>
+						<reference key="destination" ref="495755161"/>
 					</object>
-					<int key="connectionID">638</int>
+					<int key="connectionID">700</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">arrivalFord</string>
+						<reference key="source" ref="652633428"/>
+						<reference key="destination" ref="938706993"/>
+					</object>
+					<int key="connectionID">701</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">departureDijkstra</string>
+						<reference key="source" ref="652633428"/>
+						<reference key="destination" ref="1037285972"/>
+					</object>
+					<int key="connectionID">702</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">arrivalDijkstra</string>
+						<reference key="source" ref="652633428"/>
+						<reference key="destination" ref="20856200"/>
+					</object>
+					<int key="connectionID">703</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">arrivalDantzig</string>
+						<reference key="source" ref="652633428"/>
+						<reference key="destination" ref="131378622"/>
+					</object>
+					<int key="connectionID">704</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">departureDantzig</string>
+						<reference key="source" ref="652633428"/>
+						<reference key="destination" ref="529110155"/>
+					</object>
+					<int key="connectionID">705</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
-						<string key="label">solve:</string>
+						<string key="label">predFord:</string>
 						<reference key="source" ref="652633428"/>
 						<reference key="destination" ref="301540850"/>
 					</object>
-					<int key="connectionID">646</int>
+					<int key="connectionID">706</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
-						<string key="label">solve:</string>
+						<string key="label">solveFord:</string>
+						<reference key="source" ref="652633428"/>
+						<reference key="destination" ref="100115818"/>
+					</object>
+					<int key="connectionID">707</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">predDijkstra:</string>
 						<reference key="source" ref="652633428"/>
 						<reference key="destination" ref="797106723"/>
 					</object>
-					<int key="connectionID">682</int>
+					<int key="connectionID">708</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
-						<string key="label">solve:</string>
+						<string key="label">solveDijkstra:</string>
 						<reference key="source" ref="652633428"/>
 						<reference key="destination" ref="647487829"/>
 					</object>
-					<int key="connectionID">683</int>
+					<int key="connectionID">709</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
-						<string key="label">solve:</string>
+						<string key="label">predDantzig:</string>
 						<reference key="source" ref="652633428"/>
 						<reference key="destination" ref="517332228"/>
 					</object>
-					<int key="connectionID">698</int>
+					<int key="connectionID">710</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
-						<string key="label">solve:</string>
+						<string key="label">solveDantzig:</string>
 						<reference key="source" ref="652633428"/>
 						<reference key="destination" ref="319531081"/>
 					</object>
-					<int key="connectionID">699</int>
+					<int key="connectionID">711</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">import:</string>
+						<reference key="source" ref="652633428"/>
+						<reference key="destination" ref="25900555"/>
+					</object>
+					<int key="connectionID">718</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">export:</string>
+						<reference key="source" ref="652633428"/>
+						<reference key="destination" ref="786987401"/>
+					</object>
+					<int key="connectionID">719</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">generate:</string>
+						<reference key="source" ref="652633428"/>
+						<reference key="destination" ref="421639825"/>
+					</object>
+					<int key="connectionID">720</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -4036,7 +4140,6 @@
 							<reference ref="576706985"/>
 							<reference ref="305682931"/>
 							<reference ref="570200705"/>
-							<reference ref="421639825"/>
 							<reference ref="931870880"/>
 							<reference ref="24696161"/>
 							<reference ref="220697318"/>
@@ -4045,6 +4148,9 @@
 							<reference ref="230829986"/>
 							<reference ref="828117822"/>
 							<reference ref="256406520"/>
+							<reference ref="421639825"/>
+							<reference ref="25900555"/>
+							<reference ref="786987401"/>
 						</object>
 						<reference key="parent" ref="972006081"/>
 					</object>
@@ -5188,6 +5294,34 @@
 						<reference key="object" ref="377240231"/>
 						<reference key="parent" ref="277892220"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">712</int>
+						<reference key="object" ref="25900555"/>
+						<object class="NSMutableArray" key="children">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<reference ref="310749856"/>
+						</object>
+						<reference key="parent" ref="439893737"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">713</int>
+						<reference key="object" ref="310749856"/>
+						<reference key="parent" ref="25900555"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">715</int>
+						<reference key="object" ref="786987401"/>
+						<object class="NSMutableArray" key="children">
+							<bool key="EncodedWithXMLCoder">YES</bool>
+							<reference ref="1047089989"/>
+						</object>
+						<reference key="parent" ref="439893737"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">716</int>
+						<reference key="object" ref="1047089989"/>
+						<reference key="parent" ref="786987401"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -5470,6 +5604,8 @@
 					<string>631.IBPluginDependency</string>
 					<string>632.IBPluginDependency</string>
 					<string>633.IBPluginDependency</string>
+					<string>634.IBPluginDependency</string>
+					<string>635.IBPluginDependency</string>
 					<string>636.IBPluginDependency</string>
 					<string>637.IBPluginDependency</string>
 					<string>639.IBPluginDependency</string>
@@ -5524,6 +5660,10 @@
 					<string>695.IBPluginDependency</string>
 					<string>696.IBPluginDependency</string>
 					<string>697.IBPluginDependency</string>
+					<string>712.IBPluginDependency</string>
+					<string>713.IBPluginDependency</string>
+					<string>715.IBPluginDependency</string>
+					<string>716.IBPluginDependency</string>
 					<string>72.IBPluginDependency</string>
 					<string>72.ImportedFromIB2</string>
 					<string>73.IBPluginDependency</string>
@@ -5682,9 +5822,9 @@
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
-					<string>{{23, 73}, {700, 585}}</string>
+					<string>{{-68, -84}, {700, 585}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{23, 73}, {700, 585}}</string>
+					<string>{{-68, -84}, {700, 585}}</string>
 					<integer value="1"/>
 					<string>{{33, 99}, {480, 360}}</string>
 					<boolean value="YES"/>
@@ -5834,13 +5974,6 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<integer value="1041"/>
-					<boolean value="YES"/>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1041"/>
@@ -5852,17 +5985,8 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1041"/>
 					<boolean value="YES"/>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<integer value="1041"/>
-					<boolean value="YES"/>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -5879,6 +6003,28 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1041"/>
 					<boolean value="YES"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<integer value="1041"/>
+					<boolean value="YES"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<integer value="1041"/>
+					<boolean value="YES"/>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -5927,7 +6073,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">699</int>
+			<int key="maxID">720</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -5939,11 +6085,27 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>export:</string>
 							<string>generate:</string>
+							<string>import:</string>
+							<string>predDantzig:</string>
+							<string>predDijkstra:</string>
+							<string>predFord:</string>
 							<string>solve:</string>
+							<string>solveDantzig:</string>
+							<string>solveDijkstra:</string>
+							<string>solveFord:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 						</object>
@@ -5952,17 +6114,57 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>export:</string>
 							<string>generate:</string>
+							<string>import:</string>
+							<string>predDantzig:</string>
+							<string>predDijkstra:</string>
+							<string>predFord:</string>
 							<string>solve:</string>
+							<string>solveDantzig:</string>
+							<string>solveDijkstra:</string>
+							<string>solveFord:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<object class="IBActionInfo">
+								<string key="name">export:</string>
+								<string key="candidateClassName">id</string>
+							</object>
 							<object class="IBActionInfo">
 								<string key="name">generate:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
+								<string key="name">import:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">predDantzig:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">predDijkstra:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">predFord:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
 								<string key="name">solve:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">solveDantzig:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">solveDijkstra:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">solveFord:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 						</object>
@@ -5972,15 +6174,27 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>arrival</string>
+							<string>arrivalDantzig</string>
+							<string>arrivalDijkstra</string>
+							<string>arrivalFord</string>
 							<string>completeness</string>
 							<string>departure</string>
+							<string>departureDantzig</string>
+							<string>departureDijkstra</string>
+							<string>departureFord</string>
 							<string>numberOfNodes</string>
 							<string>result</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
 							<string>NSSlider</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
+							<string>NSTextField</string>
 							<string>NSTextField</string>
 							<string>NSTextField</string>
 							<string>NSTextView</string>
@@ -5991,8 +6205,14 @@
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>arrival</string>
+							<string>arrivalDantzig</string>
+							<string>arrivalDijkstra</string>
+							<string>arrivalFord</string>
 							<string>completeness</string>
 							<string>departure</string>
+							<string>departureDantzig</string>
+							<string>departureDijkstra</string>
+							<string>departureFord</string>
 							<string>numberOfNodes</string>
 							<string>result</string>
 						</object>
@@ -6003,11 +6223,35 @@
 								<string key="candidateClassName">NSTextField</string>
 							</object>
 							<object class="IBToOneOutletInfo">
+								<string key="name">arrivalDantzig</string>
+								<string key="candidateClassName">NSTextField</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">arrivalDijkstra</string>
+								<string key="candidateClassName">NSTextField</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">arrivalFord</string>
+								<string key="candidateClassName">NSTextField</string>
+							</object>
+							<object class="IBToOneOutletInfo">
 								<string key="name">completeness</string>
 								<string key="candidateClassName">NSSlider</string>
 							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">departure</string>
+								<string key="candidateClassName">NSTextField</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">departureDantzig</string>
+								<string key="candidateClassName">NSTextField</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">departureDijkstra</string>
+								<string key="candidateClassName">NSTextField</string>
+							</object>
+							<object class="IBToOneOutletInfo">
+								<string key="name">departureFord</string>
 								<string key="candidateClassName">NSTextField</string>
 							</object>
 							<object class="IBToOneOutletInfo">
