@@ -27,7 +27,6 @@
 	IBOutlet NSTextField * numberOfNodes;
 	
 	/*User entries computation*/
-	IBOutlet NSTextField * departure;
 	IBOutlet NSTextField * arrival;
 	IBOutlet NSSlider * completeness;
 	
@@ -38,9 +37,11 @@
 	IBOutlet NSTextField * departureDantzig;
 	IBOutlet NSTextField * arrivalDantzig;
 	
-	
 	/*Output*/
 	IBOutlet NSTextView * result;
+	
+	/*Time measurment*/
+	clock_t start, end;
 
 }
 

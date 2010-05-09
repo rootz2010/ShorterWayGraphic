@@ -9,8 +9,11 @@
 #import "ShorterWayController.h"
 #import "core.h"
 #import "io.h"
+#import <time.h>
 
 @implementation ShorterWayController
+
+#pragma mark Graph generation
 
 /*This function is called by the generate button*/
 -(IBAction)generate:(id)sender {
@@ -24,9 +27,38 @@
 	complet = [completeness floatValue];
 	[self addLineWithPrompt:@"Generation of graph started"];
 	/*We call the straight-C function that generates the graph*/
+	start=clock();
 	matrix = random_graph(nbNodes, complet);
+	end=clock();
+	[self showTimeTakenBetween:start and:end];
 	/*We display it*/
 	[self displayMatrix:matrix withSize:nbNodes];
+}
+
+#pragma mark Bellman ford
+
+-(IBAction)predFord:(id)sender {
+	int departure;
+	departure = [departureFord intValue];
+	start=clock();
+	predecessorFord = bellman_ford_matrix(matrix, nbNodes, departure);
+	end=clock();
+	[self addLineWithPrompt:[NSString stringWithFormat:@"Predecessor matrix using Bellman-Ford with departure %d", departure]];
+	[self showTimeTakenBetween:start and:end];
+	[self displayPredecessor:predecessorFord withSize:nbNodes];
+}
+
+#pragma mark Dikjstra
+
+-(IBAction)predDijkstra:(id)sender {
+	int departure;
+	departure = [departureDijkstra intValue];
+	start=clock();
+	predecessorDijkstra = dijkstra_matrix(matrix, nbNodes, departure);
+	end=clock();
+	[self addLineWithPrompt:[NSString stringWithFormat:@"Predecessor matrix using Dijkstra with departure %d", departure]];
+	[self showTimeTakenBetween:start and:end];
+	[self displayPredecessor:predecessorDijkstra withSize:nbNodes];
 }
 
 /*This function is called by the solve button*/
@@ -110,6 +142,12 @@
 }
 
 /*Function to add a line with a prompt*/
+-(void)showTimeTakenBetween:(clock_t)start and:(clock_t)end  {
+	double cpu_time_used;
+	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+	[self addLineWithPrompt:[NSString stringWithFormat:@"Time taken for the operation: %f s", cpu_time_used]];
+}
+
 -(void)addLineWithPrompt:(NSString *)text {
 	[self addLine:[NSString stringWithFormat:@"> %@\n", text]];
 }
@@ -136,14 +174,11 @@
 	[string release];
 }
 
-/******IO*******/
+#pragma mark I/O
 -(IBAction)export:(id)sender {
 	
 	if (matrix==NULL) {
-		NSAlert * alert = [NSAlert alertWithMessageText:@"No matrix has been generated, so no matrix can be saved"
-										  defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:@""];
-		[alert setAlertStyle:NSCriticalAlertStyle];
-		[alert runModal];
+		[self displayWarning:@"No matrix has been generated, so no matrix can be saved"];
 	}
 	else {
 		/*We open the filechooser*/
@@ -179,6 +214,13 @@
 }
 
 /******Other****/
+
+-(void)displayWarning:(NSString *)message {
+	NSAlert * alert = [NSAlert alertWithMessageText:message
+									  defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:@""];
+	[alert setAlertStyle:NSCriticalAlertStyle];
+	[alert runModal];
+}
 
 -(void)awakeFromNib {
 	[[result enclosingScrollView] setHasHorizontalScroller:YES];
