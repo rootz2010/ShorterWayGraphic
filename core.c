@@ -24,8 +24,8 @@ FILE* open_log() {
     fp = fopen("shorter_way_graphic.log", "a");
     time_t todaytime;
     todaytime = time(NULL);
-    fprintf(fp, ctime(&todaytime));
-    fprintf(fp, "starting shorter way\n");
+    //fprintf(fp, ctime(&todaytime));
+    //fprintf(fp, "starting shorter way\n");
 	return fp;
 }
 
@@ -57,9 +57,12 @@ struct chained_list* find_short(int** matrix, int nb_nodes, int departure, int a
 		 * during the first step. during this first step the tail must point to nothing*/
 		if (node != arrival) {
 			current -> next = next;
+			/* we have to change the next value, because in the matrix the value is the value 
+			 * of the whole trip, and not the value from the previous node to go to this node */
+			current -> next -> value = current -> next -> value - current -> value;
 		}
 		else {
-			current -> next = NULL; /* nothing is also NULL */
+			current -> next = NULL; /* nothing is also NULL :D */
 		}
 
 		next = current;
@@ -195,6 +198,19 @@ void free_matrix(int ** matrix, int nb_nodes) {
 	}
 	free(matrix);
 	printf("matrix memory free\n");
+}
+
+/* function to free a dantzig matrix, 3 dimensions */
+void free_dantzig_matrix(int *** matrix, int nb_nodes) {
+	int i,j;
+	
+	for (i=0; i<nb_nodes; i++) {
+		for (j=0; j<nb_nodes; j++) {
+			free(matrix[i][j]);
+		}
+		free(matrix[i]);
+	}
+	free(matrix);
 }
 
 /******************************************************************/
@@ -373,16 +389,16 @@ int*** dantzig_matrix(int ** matrix, int nb_nodes) {
 	k = 0;
 	circuit = 0;
 	
-	FILE * file;
-	file = open_log();
-	fprintf(file, "starting dantzig\n");
+	//FILE * file;
+	//file = open_log();
+	//fprintf(file, "starting dantzig\n");
 	
 	output_matrix = dantzig_init_matrix(nb_nodes);
 	
 	/* evaluation of the distances between the nodes : we grow the matrix starting from a 
 	 * small graph to finish with the whole graph */
 	while (k < nb_nodes - 1 && circuit == 0) { /* counter to increment the graph */
-		fprintf(file, "k : %d circuit : %d\n", k, circuit);
+		//fprintf(file, "k : %d circuit : %d\n", k, circuit);
 		i = 0;
 		while (i <= k && circuit == 0) { /* counter to increment the initial node */
 			for (j=0; j<=k; j++) { /* counter to increment the destination node */
@@ -390,7 +406,7 @@ int*** dantzig_matrix(int ** matrix, int nb_nodes) {
 				 * between all the nodes at the rank k, and we want to visit the k+1 node :
 				 * the algorithm tests all the nodes of arrival until k, and try to minimize
 				 * the distance between i and j */
-				fprintf(file,"i : %d, j : %d  ", i, j);
+				//fprintf(file,"i : %d, j : %d  ", i, j);
 				/* (i) -(j)-> (k+1) */
 				/* test to avoid an int overflow */
 				if (output_matrix[i][j][0] != INT_MAX && matrix[j][k+1] !=INT_MAX) {
@@ -399,7 +415,7 @@ int*** dantzig_matrix(int ** matrix, int nb_nodes) {
 				else {
 					length = INT_MAX;
 				}
-				fprintf(file,"length i -> k+1 : %d  ", length);
+				//fprintf(file,"length i -> k+1 : %d  ", length);
 				if (length < output_matrix[i][k+1][0]) { /* found a new minimum */
 					output_matrix[i][k+1][0] = length;
 					output_matrix[i][k+1][1] = j;
@@ -413,7 +429,7 @@ int*** dantzig_matrix(int ** matrix, int nb_nodes) {
 				else {
 					length = INT_MAX;
 				}
-				fprintf(file,"length k+1 -> i : %d\n", length);
+				//fprintf(file,"length k+1 -> i : %d\n", length);
 	 			if (length < output_matrix[k+1][i][0]) { /* found a new minimum in the other direction */
 					output_matrix[k+1][i][0] = length;
 					if (i == j) {
@@ -427,7 +443,7 @@ int*** dantzig_matrix(int ** matrix, int nb_nodes) {
 			/* if the distance between k+1 and i plus the one in the other direction is < 0 */
 			if (output_matrix[k+1][i][0] + output_matrix[i][k+1][0] < 0 && output_matrix[k+1][i][0] != INT_MAX && output_matrix[i][k+1][0] != INT_MAX) {
 				/* we have a circuit */
-				fprintf(file,"failed : circuit\n");
+				//fprintf(file,"failed : circuit\n");
 				circuit = 1;
 			}
 			i++;
@@ -437,7 +453,7 @@ int*** dantzig_matrix(int ** matrix, int nb_nodes) {
 		if (circuit == 0) {
 			for (i=0;i<=k;i++) {
 				for (j=0;j<=k;j++) {
-					fprintf(file,"opt : i : %d, j : %d  ", i, j);
+					//fprintf(file,"opt : i : %d, j : %d  ", i, j);
 					/* we calculate again the distance, to find a new minimum if possible */
 					/* test to avoid an int overflow */
 					if (output_matrix[i][k+1][0] != INT_MAX && output_matrix[k+1][j][0] != INT_MAX) {
@@ -446,25 +462,26 @@ int*** dantzig_matrix(int ** matrix, int nb_nodes) {
 					else {
 						length = INT_MAX;
 					}
-					fprintf(file,"length i -> k+1 : %d", length);
+					//fprintf(file,"length i -> k+1 : %d", length);
 					if (length < output_matrix[i][j][0]) {
 						/* if so, we have to replace the corresponding cell */
-						fprintf(file, "  looks like we found an optimization !");
+						////fprintf(file, "  looks like we found an optimization !");
 						output_matrix[i][j][0] = length;
 						output_matrix[i][j][1] = output_matrix[k+1][j][1];
 					}
-					fprintf(file, "\n");
+					//fprintf(file, "\n");
 				}
 			}
 		}
 		k++;
-		fprintf(file,"===========\n");
+		//fprintf(file,"===========\n");
 	}
-	fprintf(file, "###########\n");
-	fprintf(file, "\n");
-	fclose(file);
+	//fprintf(file, "###########\n");
+	//fprintf(file, "\n");
+	//fclose(file);
 	return output_matrix;
 }
+
 /* function to extract from the dantzig matrix a predecessor matrix corresponding to a given node */
 int ** dantzig_extract_predecessor(int*** matrix, int node) {
 	return matrix[node];
