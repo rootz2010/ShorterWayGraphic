@@ -54,6 +54,10 @@
 -(IBAction)generate:(id)sender;
 -(IBAction)solve:(id)sender;
 
+/*IO*/
+-(IBAction)import:(id)sender;
+-(IBAction)export:(id)sender;
+
 /*Actions buttons algorithm*/
 -(IBAction)predFord:(id)sender;
 -(IBAction)solveFord:(id)sender;
@@ -61,4 +65,5 @@
 -(IBAction)solveDijkstra:(id)sender;
 -(IBAction)predDantzig:(id)sender;
 -(IBAction)solveDantzig:(id)sender;
+
 @end

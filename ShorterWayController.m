@@ -8,6 +8,7 @@
 
 #import "ShorterWayController.h"
 #import "core.h"
+#import "io.h"
 
 @implementation ShorterWayController
 
@@ -134,6 +135,50 @@
 	
 	[string release];
 }
+
+/******IO*******/
+-(IBAction)export:(id)sender {
+	
+	if (matrix==NULL) {
+		NSAlert * alert = [NSAlert alertWithMessageText:@"No matrix has been generated, so no matrix can be saved"
+										  defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:@""];
+		[alert setAlertStyle:NSCriticalAlertStyle];
+		[alert runModal];
+	}
+	else {
+		/*We open the filechooser*/
+		NSSavePanel* saveDlg = [NSSavePanel savePanel];
+		
+		/*When the OK button is pressed we proccess the file*/
+		if ( [saveDlg runModal] == NSOKButton )
+		{
+			/*We get the path of the file*/
+			const char * file = [[saveDlg filename] UTF8String];
+			write_matrix(file, matrix, nbNodes);
+		}
+	}
+}
+
+-(IBAction)import:(id)sender {
+	NSOpenPanel* openDlg = [NSOpenPanel openPanel];
+	[openDlg setCanChooseFiles:YES];
+	[openDlg setAllowsMultipleSelection:NO];
+	[openDlg setCanChooseDirectories:NO];
+	
+	/*When the OK button is pressed we proccess the file*/
+	if ( [openDlg runModalForDirectory:nil file:nil] == NSOKButton )
+	{
+		/*We get the path of the file*/
+		const char * file = [[[openDlg filenames] objectAtIndex:0] UTF8String];
+		nbNodes = read_nb_nodes(file);
+		matrix = read_matrix(file, nbNodes);
+	}
+	/*We display the loaded matrix*/
+	[self addLineWithPrompt:@"Matrix imported"];
+	[self displayMatrix:matrix withSize:nbNodes];
+}
+
+/******Other****/
 
 -(void)awakeFromNib {
 	[[result enclosingScrollView] setHasHorizontalScroller:YES];
