@@ -11,6 +11,7 @@
 		256AC3DA0F4B6AC300CF3369 /* ShorterWayGraphicAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* ShorterWayGraphicAppDelegate.m */; };
 		4351A519117CAB9A00A88BE5 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = 4351A518117CAB9A00A88BE5 /* TODO */; };
 		4359B20011777E2C0045B9DF /* ShorterWayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4359B1FF11777E2C0045B9DF /* ShorterWayController.m */; };
+		4360D4B111974C6400ACDF0B /* io.c in Sources */ = {isa = PBXBuildFile; fileRef = 4360D4B011974C6400ACDF0B /* io.c */; };
 		4387BA5F117C9C5B00A1F390 /* core.c in Sources */ = {isa = PBXBuildFile; fileRef = 4387BA5E117C9C5B00A1F390 /* core.c */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
@@ -31,8 +32,10 @@
 		4351A518117CAB9A00A88BE5 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO; sourceTree = "<group>"; };
 		4359B1FE11777E2C0045B9DF /* ShorterWayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShorterWayController.h; sourceTree = "<group>"; };
 		4359B1FF11777E2C0045B9DF /* ShorterWayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShorterWayController.m; sourceTree = "<group>"; };
+		4360D4B011974C6400ACDF0B /* io.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = io.c; sourceTree = "<group>"; };
 		4387BA5D117C9C5B00A1F390 /* core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = core.h; sourceTree = "<group>"; };
 		4387BA5E117C9C5B00A1F390 /* core.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = core.c; sourceTree = "<group>"; };
+		43BF89D41196EB4F00EDC80A /* io.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = io.h; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* ShorterWayGraphic-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ShorterWayGraphic-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* ShorterWayGraphic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShorterWayGraphic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -105,6 +108,8 @@
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				4387BA5D117C9C5B00A1F390 /* core.h */,
 				4387BA5E117C9C5B00A1F390 /* core.c */,
+				43BF89D41196EB4F00EDC80A /* io.h */,
+				4360D4B011974C6400ACDF0B /* io.c */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -189,6 +194,7 @@
 				256AC3DA0F4B6AC300CF3369 /* ShorterWayGraphicAppDelegate.m in Sources */,
 				4359B20011777E2C0045B9DF /* ShorterWayController.m in Sources */,
 				4387BA5F117C9C5B00A1F390 /* core.c in Sources */,
+				4360D4B111974C6400ACDF0B /* io.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
