@@ -11,13 +11,6 @@
 /****************************UTILITIES*****************************/
 /******************************************************************/
 
-/* simple data structure : chained-list containing the number of the nodes */
-struct chained_list {
-	int number;
-	int value;
-	struct chained_list * next;
-};
-
 /* function written for debugging purpose : it redirects stderr to a log file */
 FILE* open_log() {
 	FILE* fp;
@@ -131,6 +124,44 @@ int ** random_graph(int nb_nodes, float completeness) {
 	return tableau;
 }
 
+/* function to create a matrix with negative values ! */
+int** random_graph_negative(int nb_nodes, float completeness) {
+	int i, j, random;
+	
+	int **tableau = (int **) calloc(nb_nodes, sizeof(int *));
+	
+	/* just to have a different configuration each time  */
+    srand(time((time_t *)0));
+	
+	/* allocate space for our little matrix */
+	for (i=0; i<nb_nodes; i++) {
+		tableau[i] = (int *) calloc(nb_nodes, sizeof(int));
+	}
+	
+	/* generate random arc with its value */
+	for (i=0;i<nb_nodes;i++){
+		/* generate the cost of the arc */
+		for (j=0; j<nb_nodes; j++) {
+			if (j != i) {
+				/* we fill the value only if we are under the percentage of completeness */
+				random = rand()/(RAND_MAX + 1.);
+				if (random < completeness) {
+					tableau[i][j] = (int) (1 + random) * (MAX_LEN - 1) - MAX_LEN/2;
+				}
+				else {
+					tableau[i][j] = INT_MAX;
+				}
+				
+			}
+			else {
+				tableau[i][i] = 0;
+			}
+		}
+	}
+	
+	return tableau;
+}
+
 /* function to convert a matrix into a chained list */
 struct chained_list ** convert_matrix(int ** tab, int nb_nodes) {
 	int i, j;
@@ -190,27 +221,28 @@ void free_list(struct chained_list ** list, int nb_nodes) {
 	printf("list memory freeed\n");
 }
 
-/* function to free a matrix, not so complicated */
-void free_matrix(int ** matrix, int nb_nodes) {
+/* function to free a 2 dimension matrix */
+void free_matrix(int ** matrix, int row) {
 	int i;
-	for (i=0; i<nb_nodes; i++) {
+	for (i=0; i<row; i++) {
 		free(matrix[i]);
 	}
 	free(matrix);
 	printf("matrix memory free\n");
 }
 
-/* function to free a dantzig matrix, 3 dimensions */
-void free_dantzig_matrix(int *** matrix, int nb_nodes) {
+/* function to free a 3 dimension matrix */
+void free_dantzig_matrix(int *** matrix, int row, int col) {
 	int i,j;
 	
-	for (i=0; i<nb_nodes; i++) {
-		for (j=0; j<nb_nodes; j++) {
+	for (i=0; i<row; i++) {
+		for (j=0; j<col; j++) {
 			free(matrix[i][j]);
 		}
 		free(matrix[i]);
 	}
 	free(matrix);
+	printf("matrix memory free\n");
 }
 
 /******************************************************************/
