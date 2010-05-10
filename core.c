@@ -31,34 +31,37 @@ FILE* open_log() {
 struct chained_list* find_short(int** matrix, int nb_nodes, int departure, int arrival) {
 	int node;
 	struct chained_list * current;
-	struct chained_list * next;
+	struct chained_list * former_current;
+	//struct chained_list * next;
 	
 	/* one pointer on which we work, one pointer which is a backup of the previous current pointer :
 	 * we build the chained_list like this : next <= (current->next) */
-	current = (struct chained_list *) malloc(sizeof(struct chained_list));
-	next  = (struct chained_list *) malloc(sizeof(struct chained_list));
+	//current = (struct chained_list *) malloc(sizeof(struct chained_list));
+	//next  = (struct chained_list *) malloc(sizeof(struct chained_list));
 	
 	node = arrival;
 	
 	do {
+		current = (struct chained_list *) malloc(sizeof(struct chained_list));
 		current -> number = node;
 		current -> value = matrix[node][0];
-		node = matrix[node][1];
 		
-		current -> next = (struct chained_list *) malloc(sizeof(struct chained_list));
+		//current -> next = (struct chained_list *) malloc(sizeof(struct chained_list));
 		/* test to avoid trying to access to next which doesn't contain anything 
 		 * during the first step. during this first step the tail must point to nothing*/
 		if (node != arrival) {
-			current -> next = next;
+			current -> next = former_current;
 			/* we have to change the next value, because in the matrix the value is the value 
 			 * of the whole trip, and not the value from the previous node to go to this node */
-			current -> next -> value = current -> next -> value - current -> value;
+			current -> next -> value = current -> next -> value - former_current -> value;
 		}
 		else {
 			current -> next = NULL; /* nothing is also NULL :D */
 		}
-
-		next = current;
+		node = matrix[node][1];
+		//We end the loop sooner if there is no way to find a path
+		if (node==INT_MAX) return NULL;
+		former_current = current;
 	} while (node != departure);
 	
 	return current;
