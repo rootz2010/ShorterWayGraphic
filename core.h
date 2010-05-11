@@ -8,11 +8,9 @@ struct chained_list {
 
 
 /* Function to generate a random graph, this graph has a matrix form
- * if you want to have achained list form use the convert_matrix function
+ * if you want to have a chained list form use the convert_matrix function
  */
-int ** random_graph(int nb_nodes, float completeness);
-/* function to generate a matrix with negative values */
-int** random_graph_negative(int nb_nodes, float completeness);
+int ** random_graph(int nb_nodes, float completeness, float negative_probability);
 /* function to convert a matrix into a chained list */
 struct chained_list ** convert_matrix(int ** tab, int nb_nodes);
 /*function to free a list*/
@@ -36,4 +34,4 @@ int** bellman_ford_matrix(int ** matrix,int nb_nodes, int depart);
 int** dijkstra_matrix(int ** matrix, int nb_nodes, int depart);
 
 /* function to find the shorter way from the predecessor matrix */
-struct chained_list* find_short(int** matrix, int nb_nodes, int departure, int arrival);
+struct chained_list* find_short(int** matrix, int departure, int arrival);

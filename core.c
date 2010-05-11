@@ -17,7 +17,8 @@
  * so we simply create a chained_list based on this structure
  * the main issue is that the predecessor matrix is not built to allow the reading in this way,
  * we have then to make something smart */
-struct chained_list* find_short(int** matrix, int nb_nodes, int departure, int arrival) {
+/*The total value of the path is stored in the varaible value of the last element of the list*/
+struct chained_list* find_short(int** matrix, int departure, int arrival) {
 	int node;
 	struct chained_list * current;
 	struct chained_list * former_current;
@@ -32,14 +33,10 @@ struct chained_list* find_short(int** matrix, int nb_nodes, int departure, int a
 		current -> number = node;
 		current -> value = matrix[node][0];
 		
-		//current -> next = (struct chained_list *) malloc(sizeof(struct chained_list));
 		/* test to avoid trying to access to next which doesn't contain anything 
 		 * during the first step. during this first step the tail must point to nothing*/
 		if (node != arrival) {
 			current -> next = former_current;
-			/* we have to change the next value, because in the matrix the value is the value 
-			 * of the whole trip, and not the value from the previous node to go to this node */
-			current -> next -> value = current -> next -> value - former_current -> value;
 		}
 		else {
 			current -> next = NULL; /* nothing is also NULL :D */
@@ -76,7 +73,7 @@ int ** generate_predecessor(int nb_nodes, int depart) {
 }
 
 /* function to generate a random graph */
-int ** random_graph(int nb_nodes, float completeness) {
+int ** random_graph(int nb_nodes, float completeness, float negative_probability) {
 	
 	int i, j;
 	int **tableau = (int **) calloc(nb_nodes, sizeof(int *));
@@ -96,7 +93,26 @@ int ** random_graph(int nb_nodes, float completeness) {
 			if (j != i) {
 				/* we fill the value only if we are under the percentage of completeness */
 				if (rand()/(RAND_MAX + 1.) < completeness) {
-					tableau[i][j] = (int) (1 + round(rand()/(RAND_MAX + 1.) * (MAX_LEN - 1)));
+					/* we want to use the negative generation only if the probability is not null */
+					if (negative_probability > 0) {
+						/* then again, we determine whether we have to fill the cell or not, to comply
+						 * with the probability */
+						if (rand()/(RAND_MAX + 1.) < negative_probability) {
+							/* we fill the cell with a number between -MAX_LEN/2+1 (because of the
+							 * formatted print of the different matrix) and -1 */
+							tableau[i][j] = (int) -(1 + round(rand()/(RAND_MAX + 1.) * (MAX_LEN/2 - 2)));
+						}
+						else {
+							/* we fill the cell with a number between 1 and MAX_LEN/2 */
+							tableau[i][j] = (int) (1 + round(rand()/(RAND_MAX + 1.) * (MAX_LEN/2 - 1)));
+						}
+					}
+					/* if the probability is null, we generate a number between 0 and MAX_LEN */
+					else {
+						tableau[i][j] = (int) (1 + round(rand()/(RAND_MAX + 1.) * (MAX_LEN - 1)));
+					}
+
+					
 				}
 				else {
 					tableau[i][j] = INT_MAX;
@@ -113,26 +129,26 @@ int ** random_graph(int nb_nodes, float completeness) {
 }
 
 /* function to create a matrix with negative values ! */
-int** random_graph_negative(int nb_nodes, float completeness) {
+/* int** random_graph_negative(int nb_nodes, float completeness, float negative_probability) {
 	int i, j;
 	
 	int **tableau = (int **) calloc(nb_nodes, sizeof(int *));
 	
 	/* just to have a different configuration each time  */
-    srand(time((time_t *)0));
+	/* srand(time((time_t *)0));
 	
 	/* allocate space for our little matrix */
-	for (i=0; i<nb_nodes; i++) {
+	/* for (i=0; i<nb_nodes; i++) {
 		tableau[i] = (int *) calloc(nb_nodes, sizeof(int));
 	}
 	
 	/* generate random arc with its value */
-	for (i=0;i<nb_nodes;i++){
+	/* for (i=0;i<nb_nodes;i++){
 		/* generate the cost of the arc */
-		for (j=0; j<nb_nodes; j++) {
+		/* for (j=0; j<nb_nodes; j++) {
 			if (j != i) {
 				/* we fill the value only if we are under the percentage of completeness */
-				if (rand()/(RAND_MAX + 1.) < completeness) {
+				/* if (rand()/(RAND_MAX + 1.) < completeness) {
 					tableau[i][j] = (int) ((1 + round(rand()/(RAND_MAX + 1.) * (MAX_LEN - 1))) - MAX_LEN/2);
 				}
 				else {
@@ -146,7 +162,7 @@ int** random_graph_negative(int nb_nodes, float completeness) {
 	}
 	
 	return tableau;
-}
+} */
 
 /* function to convert a matrix into a chained list */
 struct chained_list ** convert_matrix(int ** tab, int nb_nodes) {
@@ -283,7 +299,7 @@ int** bellman_ford_matrix(int ** matrix,int nb_nodes, int depart) {
 		compteur++;
 	}
 	/*Check for negative cycles*/
-	if(compteur=nb_nodes+1 && modif) {
+	if(compteur==(nb_nodes+1) && modif) {
 		return NULL;
 	}
 	else return predecessor;
@@ -470,6 +486,7 @@ int*** dantzig_matrix(int ** matrix, int nb_nodes) {
 			if (output_matrix[k+1][i][0] + output_matrix[i][k+1][0] < 0 && output_matrix[k+1][i][0] != INT_MAX && output_matrix[i][k+1][0] != INT_MAX) {
 				/* we have a circuit */
 				circuit = 1;
+				return NULL;
 			}
 			i++;
 		}

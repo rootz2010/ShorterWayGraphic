@@ -14,6 +14,7 @@
 	/*Variables to handle the current graph*/
 	int nbNodes;
 	float complet;
+	float negat;
 	int ** matrix;
 	
 	/*Variable to retain the chosen departure*/
@@ -32,6 +33,7 @@
 	IBOutlet NSTextField * numberOfNodes;
 	IBOutlet NSSlider * completeness;
 	BOOL negativeAllowed;
+	IBOutlet NSSlider * probabilityOfNegative;
 	
 	IBOutlet NSTextField * departureFord;
 	IBOutlet NSTextField * arrivalFord;
@@ -58,6 +60,7 @@
 -(void)displayMatrix:(int **)matrix withSize:(int)size;
 -(void)displayPredecessor:(int **)mat withSize:(int)size;
 -(void)displayPath:(struct chained_list *)path goingFrom:(int)departure;
+//-(void)displayPathDantzig:(struct chained_list *)path goingFrom:(int)departure;
 -(void)displayWarning:(NSString *)message;
 -(void)addLineWithPrompt:(NSString *)text;
 -(void)addLineWithoutPrompt:(NSString *)text;
@@ -90,6 +93,9 @@
 /*Function to validate departure and arrival*/
 -(BOOL)validateDeparture:(int)dep;
 -(BOOL)validateArrival:(int)arr;
+
+/*Function to see if a grpah has been generated or imported and if not display a warning*/
+-(BOOL)graphNotEmpty;
 
 /*utilities*/
 -(void)freeAll;
