@@ -16,19 +16,22 @@
 	float complet;
 	int ** matrix;
 	
+	/*Variable to retain the chosen departure*/
+	int depFord;
+	int depDijkstra;
+	int depDantzig;
+	
 	/*Predecessor for the different algorithms*/
 	int ** predecessorFord;
 	int ** predecessorDijkstra;
-	int ** predecessorDantzig;
+	int *** predecessorDantzig;
 	
 	int ** predecessor;
 	
 	/*User entries Graph*/
 	IBOutlet NSTextField * numberOfNodes;
-	
-	/*User entries computation*/
-	IBOutlet NSTextField * arrival;
 	IBOutlet NSSlider * completeness;
+	BOOL negativeAllowed;
 	
 	IBOutlet NSTextField * departureFord;
 	IBOutlet NSTextField * arrivalFord;
@@ -42,18 +45,26 @@
 	
 	/*Time measurment*/
 	clock_t start, end;
-
+	
+	/*Stress test*/
+	IBOutlet NSMatrix * radioButtons;
+	IBOutlet NSTextField * sizeMin;
+	IBOutlet NSTextField * sizeMax;
+	IBOutlet NSTextField * increment;
+	
 }
 
 /*Text display functions*/
 -(void)displayMatrix:(int **)matrix withSize:(int)size;
+-(void)displayPredecessor:(int **)mat withSize:(int)size;
+-(void)displayPath:(struct chained_list *)path goingFrom:(int)departure;
+-(void)displayWarning:(NSString *)message;
 -(void)addLineWithPrompt:(NSString *)text;
 -(void)addLineWithoutPrompt:(NSString *)text;
 -(void)addLine:(NSString *)text;
 
 
 -(IBAction)generate:(id)sender;
--(IBAction)solve:(id)sender;
 
 /*IO*/
 -(IBAction)import:(id)sender;
@@ -66,5 +77,21 @@
 -(IBAction)solveDijkstra:(id)sender;
 -(IBAction)predDantzig:(id)sender;
 -(IBAction)solveDantzig:(id)sender;
+
+/*Negative allowed Checkbox*/
+-(IBAction)negativeAllowedClicked:(id)sender;
+
+/*Stress test*/
+-(IBAction)stressTest:(id)sender;
+
+/*Time measurment*/
+-(void)showTimeTakenBetween:(clock_t)start and:(clock_t)end;
+
+/*Function to validate departure and arrival*/
+-(BOOL)validateDeparture:(int)dep;
+-(BOOL)validateArrival:(int)arr;
+
+/*utilities*/
+-(void)freeAll;
 
 @end

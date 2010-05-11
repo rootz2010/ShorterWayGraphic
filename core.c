@@ -11,17 +11,6 @@
 /****************************UTILITIES*****************************/
 /******************************************************************/
 
-/* function written for debugging purpose : it redirects stderr to a log file */
-FILE* open_log() {
-	FILE* fp;
-    fp = fopen("shorter_way_graphic.log", "a");
-    time_t todaytime;
-    todaytime = time(NULL);
-    //fprintf(fp, ctime(&todaytime));
-    //fprintf(fp, "starting shorter way\n");
-	return fp;
-}
-
 /* function to find the shorter way from the predecessor matrix */
 /* the idea of the function is to give back a chained-list readable directly in the right way
  * we want to display something like departure -(cost)-> "intermediary node" -(cost)-> arrival
@@ -32,12 +21,9 @@ struct chained_list* find_short(int** matrix, int nb_nodes, int departure, int a
 	int node;
 	struct chained_list * current;
 	struct chained_list * former_current;
-	//struct chained_list * next;
 	
 	/* one pointer on which we work, one pointer which is a backup of the previous current pointer :
 	 * we build the chained_list like this : next <= (current->next) */
-	//current = (struct chained_list *) malloc(sizeof(struct chained_list));
-	//next  = (struct chained_list *) malloc(sizeof(struct chained_list));
 	
 	node = arrival;
 	
@@ -93,6 +79,42 @@ int ** generate_predecessor(int nb_nodes, int depart) {
 int ** random_graph(int nb_nodes, float completeness) {
 	
 	int i, j;
+	int **tableau = (int **) calloc(nb_nodes, sizeof(int *));
+	
+	/* just to have a different configuration each time  */
+    srand(time((time_t *)0));
+	
+	/* allocate space for our little matrix */
+	for (i=0; i<nb_nodes; i++) {
+		tableau[i] = (int *) calloc(nb_nodes, sizeof(int));
+	}
+	
+	/* generate random arc with its value */
+	for (i=0;i<nb_nodes;i++){
+		/* generate the cost of the arc */
+		for (j=0; j<nb_nodes; j++) {
+			if (j != i) {
+				/* we fill the value only if we are under the percentage of completeness */
+				if (rand()/(RAND_MAX + 1.) < completeness) {
+					tableau[i][j] = (int) (1 + round(rand()/(RAND_MAX + 1.) * (MAX_LEN - 1)));
+				}
+				else {
+					tableau[i][j] = INT_MAX;
+				}
+				
+			}
+			else {
+				tableau[i][i] = 0;
+			}
+		}
+	}
+	
+	return tableau;
+}
+
+/* function to create a matrix with negative values ! */
+int** random_graph_negative(int nb_nodes, float completeness) {
+	int i, j;
 	
 	int **tableau = (int **) calloc(nb_nodes, sizeof(int *));
 	
@@ -111,50 +133,11 @@ int ** random_graph(int nb_nodes, float completeness) {
 			if (j != i) {
 				/* we fill the value only if we are under the percentage of completeness */
 				if (rand()/(RAND_MAX + 1.) < completeness) {
-					tableau[i][j] = (int) (1 + round(rand()/(RAND_MAX + 1.) * (MAX_LEN -1 )));
+					tableau[i][j] = (int) ((1 + round(rand()/(RAND_MAX + 1.) * (MAX_LEN - 1))) - MAX_LEN/2);
 				}
 				else {
 					tableau[i][j] = INT_MAX;
 				}
-				
-			}
-			else {
-				tableau[i][i] = 0;
-			}
-		}
-	}
-	
-	return tableau;
-}
-
-/* function to create a matrix with negative values ! */
-int** random_graph_negative(int nb_nodes, float completeness) {
-	int i, j, random;
-	
-	int **tableau = (int **) calloc(nb_nodes, sizeof(int *));
-	
-	/* just to have a different configuration each time  */
-    srand(time((time_t *)0));
-	
-	/* allocate space for our little matrix */
-	for (i=0; i<nb_nodes; i++) {
-		tableau[i] = (int *) calloc(nb_nodes, sizeof(int));
-	}
-	
-	/* generate random arc with its value */
-	for (i=0;i<nb_nodes;i++){
-		/* generate the cost of the arc */
-		for (j=0; j<nb_nodes; j++) {
-			if (j != i) {
-				/* we fill the value only if we are under the percentage of completeness */
-				random = rand()/(RAND_MAX + 1.);
-				if (random < completeness) {
-					tableau[i][j] = (int) (1 + random) * (MAX_LEN - 1) - MAX_LEN/2;
-				}
-				else {
-					tableau[i][j] = INT_MAX;
-				}
-				
 			}
 			else {
 				tableau[i][i] = 0;
@@ -201,8 +184,21 @@ struct chained_list ** convert_matrix(int ** tab, int nb_nodes) {
 	return &list[0];
 }
 
-/* function to free a chained_list */
-void free_list(struct chained_list ** list, int nb_nodes) {
+/*function to free a list*/
+void free_list(struct chained_list * list) {
+	struct chained_list * cursor;
+	struct chained_list * tmp;
+	cursor = list;
+	/* then we free as we go further in the graph */
+	while (cursor->next != NULL) {
+		tmp = cursor->next;
+		free(cursor);
+		cursor = tmp;
+	}
+}
+
+/* function to free a table of chained_list */
+void free_table_list(struct chained_list ** list, int nb_nodes) {
 	int i;
 	
 	struct chained_list * pointer;
@@ -221,21 +217,19 @@ void free_list(struct chained_list ** list, int nb_nodes) {
 		}
 	}
 	free(list);
-	printf("list memory freeed\n");
 }
 
 /* function to free a 2 dimension matrix */
-void free_matrix(int ** matrix, int row) {
+void free_2Dmatrix(int ** matrix, int row) {
 	int i;
 	for (i=0; i<row; i++) {
 		free(matrix[i]);
 	}
 	free(matrix);
-	printf("matrix memory free\n");
 }
 
 /* function to free a 3 dimension matrix */
-void free_dantzig_matrix(int *** matrix, int row, int col) {
+void free_3Dmatrix(int *** matrix, int row, int col) {
 	int i,j;
 	
 	for (i=0; i<row; i++) {
@@ -245,7 +239,6 @@ void free_dantzig_matrix(int *** matrix, int row, int col) {
 		free(matrix[i]);
 	}
 	free(matrix);
-	printf("matrix memory free\n");
 }
 
 /******************************************************************/
@@ -256,13 +249,15 @@ void free_dantzig_matrix(int *** matrix, int row, int col) {
 int** bellman_ford_matrix(int ** matrix,int nb_nodes, int depart) {
 	int i,j;
 	int ** predecessor;
+	int modif;
 	int compteur;
 	/*Initialization of the variables*/
-	compteur = INT_MAX;
+	modif = INT_MAX;
+	compteur = 0;
 	predecessor = generate_predecessor(nb_nodes, depart);
 	/*While the table of predecessors is not modified we run the code*/
-	while(compteur) {
-		compteur = 0;
+	while(modif && compteur<=nb_nodes) {
+		modif = 0;
 		/*We go through the matrix by column to get the list of successors*/
 		for (j=0; j<nb_nodes; j++) {
 			for (i=0; i<nb_nodes; i++) {
@@ -278,16 +273,20 @@ int** bellman_ford_matrix(int ** matrix,int nb_nodes, int depart) {
 					int new_length;
 					new_length = pred+edge_weight;
 					if (predecessor[j][0] > new_length) {
-						//Add a check for negative cycles
 						predecessor[j][0] = new_length;
 						predecessor[j][1] = i;
-						compteur++;
+						modif++;
 					}
 				}
 			}
-		} 
+		}
+		compteur++;
 	}
-	return predecessor;
+	/*Check for negative cycles*/
+	if(compteur=nb_nodes+1 && modif) {
+		return NULL;
+	}
+	else return predecessor;
 }
 
 /******************************************************************/
@@ -424,16 +423,11 @@ int*** dantzig_matrix(int ** matrix, int nb_nodes) {
 	k = 0;
 	circuit = 0;
 	
-	//FILE * file;
-	//file = open_log();
-	//fprintf(file, "starting dantzig\n");
-	
 	output_matrix = dantzig_init_matrix(nb_nodes);
 	
 	/* evaluation of the distances between the nodes : we grow the matrix starting from a 
 	 * small graph to finish with the whole graph */
 	while (k < nb_nodes - 1 && circuit == 0) { /* counter to increment the graph */
-		//fprintf(file, "k : %d circuit : %d\n", k, circuit);
 		i = 0;
 		while (i <= k && circuit == 0) { /* counter to increment the initial node */
 			for (j=0; j<=k; j++) { /* counter to increment the destination node */
@@ -441,7 +435,6 @@ int*** dantzig_matrix(int ** matrix, int nb_nodes) {
 				 * between all the nodes at the rank k, and we want to visit the k+1 node :
 				 * the algorithm tests all the nodes of arrival until k, and try to minimize
 				 * the distance between i and j */
-				//fprintf(file,"i : %d, j : %d  ", i, j);
 				/* (i) -(j)-> (k+1) */
 				/* test to avoid an int overflow */
 				if (output_matrix[i][j][0] != INT_MAX && matrix[j][k+1] !=INT_MAX) {
@@ -450,7 +443,6 @@ int*** dantzig_matrix(int ** matrix, int nb_nodes) {
 				else {
 					length = INT_MAX;
 				}
-				//fprintf(file,"length i -> k+1 : %d  ", length);
 				if (length < output_matrix[i][k+1][0]) { /* found a new minimum */
 					output_matrix[i][k+1][0] = length;
 					output_matrix[i][k+1][1] = j;
@@ -464,7 +456,6 @@ int*** dantzig_matrix(int ** matrix, int nb_nodes) {
 				else {
 					length = INT_MAX;
 				}
-				//fprintf(file,"length k+1 -> i : %d\n", length);
 	 			if (length < output_matrix[k+1][i][0]) { /* found a new minimum in the other direction */
 					output_matrix[k+1][i][0] = length;
 					if (i == j) {
@@ -478,7 +469,6 @@ int*** dantzig_matrix(int ** matrix, int nb_nodes) {
 			/* if the distance between k+1 and i plus the one in the other direction is < 0 */
 			if (output_matrix[k+1][i][0] + output_matrix[i][k+1][0] < 0 && output_matrix[k+1][i][0] != INT_MAX && output_matrix[i][k+1][0] != INT_MAX) {
 				/* we have a circuit */
-				//fprintf(file,"failed : circuit\n");
 				circuit = 1;
 			}
 			i++;
@@ -488,7 +478,6 @@ int*** dantzig_matrix(int ** matrix, int nb_nodes) {
 		if (circuit == 0) {
 			for (i=0;i<=k;i++) {
 				for (j=0;j<=k;j++) {
-					//fprintf(file,"opt : i : %d, j : %d  ", i, j);
 					/* we calculate again the distance, to find a new minimum if possible */
 					/* test to avoid an int overflow */
 					if (output_matrix[i][k+1][0] != INT_MAX && output_matrix[k+1][j][0] != INT_MAX) {
@@ -497,23 +486,16 @@ int*** dantzig_matrix(int ** matrix, int nb_nodes) {
 					else {
 						length = INT_MAX;
 					}
-					//fprintf(file,"length i -> k+1 : %d", length);
 					if (length < output_matrix[i][j][0]) {
 						/* if so, we have to replace the corresponding cell */
-						////fprintf(file, "  looks like we found an optimization !");
 						output_matrix[i][j][0] = length;
 						output_matrix[i][j][1] = output_matrix[k+1][j][1];
 					}
-					//fprintf(file, "\n");
 				}
 			}
 		}
 		k++;
-		//fprintf(file,"===========\n");
 	}
-	//fprintf(file, "###########\n");
-	//fprintf(file, "\n");
-	//fclose(file);
 	return output_matrix;
 }
 

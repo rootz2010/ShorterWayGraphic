@@ -16,24 +16,23 @@ int** random_graph_negative(int nb_nodes, float completeness);
 /* function to convert a matrix into a chained list */
 struct chained_list ** convert_matrix(int ** tab, int nb_nodes);
 /*function to free a list*/
-void free_list(struct chained_list ** list, int nb_nodes);
+void free_list(struct chained_list * list);
+/*function to free a table of chained list*/
+void free_table_list(struct chained_list ** list, int nb_nodes);
 /*function to free a 2 dimensions matrix*/
-void free_matrix(int ** matrix, int row);
+void free_2Dmatrix(int ** matrix, int row);
 /* function to free a 3 dimensions matrix */
-void free_dantzig_matrix(int *** matrix, int row, int col);
+void free_3Dmatrix(int *** matrix, int row, int col);
 
 /* function to find the shorter way using dantzig */
 int*** dantzig_matrix(int ** matrix, int nb_nodes);
 int*** dantzig_init_matrix(int nb_nodes);
 int ** dantzig_extract_predecessor(int*** matrix, int nb_nodes);
 
-/*bellman ford algorithm*/
+/*bellman ford algorithm, this function returns a predecessor matrix*/
 int** bellman_ford_matrix(int ** matrix,int nb_nodes, int depart);
 
-/* function useful when debugging : redirection of stderror to a file */
-FILE* open_log();
-
-/*Dikjstra matrix*/
+/*Dikjstra matrix, this function returns a predecessor matrix*/
 int** dijkstra_matrix(int ** matrix, int nb_nodes, int depart);
 
 /* function to find the shorter way from the predecessor matrix */

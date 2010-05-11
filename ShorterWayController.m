@@ -1,11 +1,3 @@
-//
-//  ShorterWayController.m
-//  ShorterWayGraphic
-//
-//  Created by Benjamin Loulier on 15/04/10.
-//  Copyright 2010 Ecole nationale supèrieure des Mines de Saint-Etienne. All rights reserved.
-//
-
 #import "ShorterWayController.h"
 #import "core.h"
 #import "io.h"
@@ -17,18 +9,18 @@
 
 /*This function is called by the generate button*/
 -(IBAction)generate:(id)sender {
-	/*We free the previous matrix*/
-	if(matrix!=NULL) {
-		free_matrix(matrix, nbNodes);
-		NSLog(@"Matrix freed");
-	}
+	/*We free all the previous graph matrix and precessor matrix*/
+	[self freeAll];
 	/*We get the values of the text fields and of the slider*/
 	nbNodes = [numberOfNodes intValue];
 	complet = [completeness floatValue];
 	[self addLineWithPrompt:@"Generation of graph started"];
 	/*We call the straight-C function that generates the graph*/
 	start=clock();
-	matrix = random_graph(nbNodes, complet);
+	if(negativeAllowed) {
+		matrix = random_graph_negative(nbNodes, complet);
+	}
+	else matrix = random_graph(nbNodes, complet);
 	end=clock();
 	[self showTimeTakenBetween:start and:end];
 	/*We display it*/
@@ -38,48 +30,108 @@
 #pragma mark Bellman ford
 
 -(IBAction)predFord:(id)sender {
-	int departure;
-	departure = [departureFord intValue];
-	start=clock();
-	predecessorFord = bellman_ford_matrix(matrix, nbNodes, departure);
-	end=clock();
-	[self addLineWithPrompt:[NSString stringWithFormat:@"Predecessor matrix using Bellman-Ford with departure %d", departure]];
-	[self showTimeTakenBetween:start and:end];
-	[self displayPredecessor:predecessorFord withSize:nbNodes];
+	depFord = [departureFord intValue];
+	if ([self validateDeparture:depFord]) {
+		start=clock();
+		predecessorFord = bellman_ford_matrix(matrix, nbNodes, depFord);
+		end=clock();
+		[self addLineWithPrompt:[NSString stringWithFormat:@"Predecessor matrix using Bellman-Ford with departure %d", depFord]];
+		[self showTimeTakenBetween:start and:end];
+		if (predecessorFord) {
+			[self displayPredecessor:predecessorFord withSize:nbNodes];
+		}
+		else [self addLineWithoutPrompt:@"Negative cycles in the graph"];
+	}
 }
 
+-(IBAction)solveFord:(id)sender {
+	int arr;
+	struct chained_list * path;
+	arr=[arrivalFord intValue];
+	/*We test to see if the predecessor matrix has already been generated*/
+	if(predecessorFord) {
+		if ([self validateArrival:arr]) {
+			start=clock();
+			path=find_short(predecessorFord, nbNodes, depFord, arr);
+			end=clock();
+			[self addLineWithPrompt:[NSString stringWithFormat:@"Shorter way using Bellman-Ford with departure %d and arrival %d", depFord, arr]];
+			[self showTimeTakenBetween:start and:end];
+			[self displayPath:path goingFrom:depFord];
+			/*We free the path*/
+			free_list(path);
+		}
+	}
+	else [self displayWarning:@"You need to generate the predecessor matrix before"];
+}
 #pragma mark Dikjstra
 
 -(IBAction)predDijkstra:(id)sender {
-	int departure;
-	departure = [departureDijkstra intValue];
-	start=clock();
-	predecessorDijkstra = dijkstra_matrix(matrix, nbNodes, departure);
-	end=clock();
-	[self addLineWithPrompt:[NSString stringWithFormat:@"Predecessor matrix using Dijkstra with departure %d", departure]];
-	[self showTimeTakenBetween:start and:end];
-	[self displayPredecessor:predecessorDijkstra withSize:nbNodes];
+	depDijkstra = [departureDijkstra intValue];
+	if ([self validateDeparture:depDijkstra]) {
+		start=clock();
+		predecessorDijkstra = dijkstra_matrix(matrix, nbNodes, depDijkstra);
+		end=clock();
+		[self addLineWithPrompt:[NSString stringWithFormat:@"Predecessor matrix using Dijkstra with departure %d", depDijkstra]];
+		[self showTimeTakenBetween:start and:end];
+		[self displayPredecessor:predecessorDijkstra withSize:nbNodes];
+	}
 }
 
-/*This function is called by the solve button*/
--(IBAction)solve:(id)sender {
-	
-	[self addLineWithPrompt:@"Looking for the shortest way"];
-	
-	[self addLineWithPrompt:@"Looking for the shortest way bellman"];
-	predecessor = bellman_ford_matrix(matrix, nbNodes, 0);
-	[self displayPredecessor:predecessor withSize:nbNodes];
-	
-	[self addLineWithPrompt:@"Looking for the shortest way dijkstra"];
-	predecessor = dijkstra_matrix(matrix, nbNodes, 0);
-	if(predecessor!=NULL) {
-		NSLog(@"not null");
+-(IBAction)solveDijkstra:(id)sender {
+	int arr;
+	struct chained_list* path;
+	arr = [arrivalDijkstra intValue];
+	/*We test to see if the predecessor matrix has already been generated*/
+	if (predecessorDijkstra) {
+		if ([self validateArrival:arr]) {
+			start = clock();
+			path = find_short(predecessorDijkstra, nbNodes, depDijkstra, arr);
+			end = clock();
+			[self addLineWithPrompt:[NSString stringWithFormat:@"Shorter way using Dijkstra with departure %d and arrival %d", depDijkstra, arr]];
+			[self showTimeTakenBetween:start and:end];
+			[self displayPath:path goingFrom:depDijkstra];
+			/*We free the path*/
+			free_list(path);
+		}
 	}
-	[self displayPredecessor:predecessor withSize:nbNodes];
-	
-	[self addLineWithPrompt:@"Looking for the shortest way Dantzig"];
-	int *** mouche = dantzig_matrix(matrix, nbNodes);
-	[self displayDantzigMatrix:mouche withSize:nbNodes];
+	else [self displayWarning:@"You need to generate the predecessor matrix before"];
+}
+
+#pragma mark Dantzig
+
+-(IBAction)predDantzig:(id)sender {
+	start = clock();
+	predecessorDantzig = dantzig_matrix(matrix, nbNodes);
+	end = clock();
+	[self addLineWithPrompt:[NSString stringWithFormat:@"Predecessor matrix using Dijkstra with departure %d", depDijkstra]];
+	[self showTimeTakenBetween:start and:end];
+	[self addLineWithoutPrompt:@"The predecessor matrix is not displayed, because it is too complicated!"];
+	[self addLineWithoutPrompt:@"The predecessor matrix for one departure will be displayed during shorter way computation"];
+}
+
+-(IBAction)solveDantzig:(id)sender {
+	int arr;
+	int ** tempPred;
+	struct chained_list * path;
+	depDantzig = [departureDantzig intValue];
+	arr = [arrivalDantzig intValue];
+	/*We test to see if the predecessor matrix has already been generated*/
+	if(predecessorDantzig) {
+		if ([self validateDeparture:depDantzig] && [self validateArrival:arr]) {
+			tempPred = dantzig_extract_predecessor(predecessorDantzig, depDantzig);
+			[self addLineWithPrompt:[NSString stringWithFormat:@"Intermediary predecessor matrix using Dantzig with departure %d", depDantzig]];
+			[self displayPredecessor:tempPred withSize:nbNodes];
+			start = clock();
+			path = find_short(tempPred, nbNodes, depDantzig, arr);
+			end = clock();
+			[self addLineWithPrompt:[NSString stringWithFormat:@"Shorter way using Dantzig with departure %d and arrival %d", depDantzig, arr]];
+			[self showTimeTakenBetween:start and:end];
+			[self displayPath:path goingFrom:depDijkstra];
+			/*We free the path*/
+			free_list(path);
+		}
+	}
+	else [self displayWarning:@"You need to generate the predecessor matrix before"];
 }
 
 /*Display functions*/
@@ -88,9 +140,11 @@
 -(void)displayPredecessor:(int **)mat withSize:(int)size {
 	int i, j;
 	NSMutableString * line;
+	line = [NSMutableString stringWithString:@"N |P|W|"];
+	[self addLineWithoutPrompt:line];
 	for (i=0; i<size; i++) {
-		line = [NSMutableString stringWithString:@""];
-		for (j=0; j<2; j++) {
+		line = [NSMutableString stringWithFormat:@"%d ",i];
+		for (j=1; j>=0; j--) {
 			int value = mat[i][j];
 			if(value == INT_MAX) {
 				[line appendString:@"-- "];
@@ -119,6 +173,40 @@
 	}
 }
 
+-(void)displayPath:(struct chained_list *)path goingFrom:(int)dep {
+	int compteur;
+	int distance;
+	struct chained_list * cursor;
+	NSMutableString * line;
+	compteur = 0;
+	distance = 0;
+	cursor = path;
+	if (path) {
+		line = [NSMutableString stringWithFormat:@"%d ->",dep];
+		while (cursor) {
+			distance+=cursor->value;
+			if (cursor->next) {
+				[line appendFormat:@"%d ->", cursor->number];
+			}
+			else {
+				[line appendFormat:@"%d", cursor->number];
+			}
+			
+			compteur++;
+			if (!compteur%10) [line appendFormat:@"\n"];
+			cursor = cursor->next;
+		}
+		
+	}
+	else {
+		line = [NSMutableString stringWithString:@"No path can be found"];
+	}
+
+	[self addLineWithoutPrompt:line];
+	line = [NSMutableString stringWithFormat:@"Length of the path: %d", distance];
+	[self addLineWithoutPrompt:line];
+}
+
 /* function to display the matrix resulted */
 -(void)displayDantzigMatrix:(int ***)mat withSize:(int)size {
 	int i,j;
@@ -142,9 +230,9 @@
 }
 
 /*Function to add a line with a prompt*/
--(void)showTimeTakenBetween:(clock_t)start and:(clock_t)end  {
+-(void)showTimeTakenBetween:(clock_t)deb and:(clock_t)fin  {
 	double cpu_time_used;
-	cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+	cpu_time_used = ((double) (fin - deb)) / CLOCKS_PER_SEC;
 	[self addLineWithPrompt:[NSString stringWithFormat:@"Time taken for the operation: %f s", cpu_time_used]];
 }
 
@@ -175,6 +263,7 @@
 }
 
 #pragma mark I/O
+
 -(IBAction)export:(id)sender {
 	
 	if (matrix==NULL) {
@@ -195,6 +284,9 @@
 }
 
 -(IBAction)import:(id)sender {
+	/*We free all the previous graph matrix and precessor matrix*/
+	[self freeAll];
+	/*We open the save panel dialog*/
 	NSOpenPanel* openDlg = [NSOpenPanel openPanel];
 	[openDlg setCanChooseFiles:YES];
 	[openDlg setAllowsMultipleSelection:NO];
@@ -213,7 +305,117 @@
 	[self displayMatrix:matrix withSize:nbNodes];
 }
 
-/******Other****/
+#pragma mark stress test
+
+-(IBAction)stressTest:(id)sender {
+	/*Variables we will use*/
+	int i;
+	int ** graph;
+	int deb;
+	int fin;
+	/*We get the entries of the user*/
+	int method = [[radioButtons selectedCell] tag];
+	int min = [sizeMin intValue];
+	int max = [sizeMax intValue];
+	int inc = [increment intValue];
+	/*We open the filechooser*/
+	NSFileHandle* file;
+	NSSavePanel* saveDlg = [NSSavePanel savePanel];
+	/*When the OK button is pressed we proccess the file*/
+	if ( [saveDlg runModal] == NSOKButton )
+	{
+		/*We create the file*/
+		[[NSFileManager defaultManager] createFileAtPath:[saveDlg filename]
+												contents: nil attributes: nil];
+		/*We open it for writing*/
+		file = [NSFileHandle fileHandleForWritingAtPath:[saveDlg filename]];
+	}
+	
+	/*We start the stress test*/
+	for(i=min; i<=max; i+=inc) {
+		graph = random_graph(i, 0.5);
+		switch (method) {
+			case 0:
+				deb = clock();
+				bellman_ford_matrix(graph, i, 0);
+				fin = clock();
+				break;
+			case 1:
+				deb = clock();
+				dijkstra_matrix(graph, i, 0);
+				fin = clock();
+				break;
+			case 2:
+				deb = clock();
+				dantzig_matrix(graph, i);
+				fin = clock();
+				break;
+			default:
+				break;
+		}
+		
+		/*We write the result in a file*/
+		[file writeData:[[NSString stringWithFormat:@"%d, %f\n",i, ((double) (fin - deb))/CLOCKS_PER_SEC] dataUsingEncoding:NSASCIIStringEncoding]];
+		/*We free the graph*/
+		free_2Dmatrix(graph, i);
+	}
+	/*We close the file*/
+	[file closeFile];
+	
+}
+
+#pragma mark other
+
+/*Function to free all the matrix*/
+-(void)freeAll {
+	if(matrix) free_2Dmatrix(matrix, nbNodes);
+	if(predecessorFord) { free_2Dmatrix(predecessorFord, nbNodes); predecessorFord=NULL;}
+	if(predecessorDijkstra) { free_2Dmatrix(predecessorDijkstra, nbNodes); predecessorDijkstra=NULL;}
+	if(predecessorDantzig) { free_3Dmatrix(predecessorDantzig, nbNodes, nbNodes); predecessorDantzig=NULL;}
+}
+
+/*Function to validate departure and arrival*/
+-(BOOL)validateDeparture:(int)dep {
+	if(dep<=nbNodes) {
+		return TRUE;
+	}
+	else {
+		[self displayWarning:@"The departure entered is not valid (value superior to the number of nodes)"];
+		return FALSE;
+	}
+}
+
+-(BOOL)validateArrival:(int)arr {
+	if(arr<=nbNodes) {
+		return TRUE;
+	}
+	else {
+		[self displayWarning:@"The arrival entered is not valid (value superior to the number of nodes)"];
+		return FALSE;
+	}
+}
+
+/*Function to disable the selection of the dijkstra tab when matrix with negative values are allowed*/
+- (BOOL)tabView:(NSTabView *)tabView shouldSelectTabViewItem:(NSTabViewItem *)tabViewItem {
+	if (![[tabViewItem label] compare:@"Dijkstra"] && negativeAllowed==TRUE) {
+		return FALSE;
+	}
+	return TRUE;
+}
+
+/*Function called when the negative allowed checkbox is clicked*/
+-(IBAction)negativeAllowedClicked:(id)sender {
+	NSButton * stateButton = (NSButton *) sender;
+	int state = [stateButton state];
+	switch (state) {
+		case 0:
+			negativeAllowed = FALSE;
+			break;
+		default:
+			negativeAllowed = TRUE;
+			break;
+	}
+}
 
 -(void)displayWarning:(NSString *)message {
 	NSAlert * alert = [NSAlert alertWithMessageText:message
@@ -228,6 +430,7 @@
 	[result setAutoresizingMask:(NSViewWidthSizable | NSViewHeightSizable)];
 	[[result textContainer] setContainerSize:NSMakeSize(FLT_MAX, FLT_MAX)];
 	[[result textContainer] setWidthTracksTextView:NO];
+	negativeAllowed = FALSE;
 }
 
 

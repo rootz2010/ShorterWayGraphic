@@ -12,6 +12,7 @@
 		4351A519117CAB9A00A88BE5 /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = 4351A518117CAB9A00A88BE5 /* TODO */; };
 		4359B20011777E2C0045B9DF /* ShorterWayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4359B1FF11777E2C0045B9DF /* ShorterWayController.m */; };
 		4360D4B111974C6400ACDF0B /* io.c in Sources */ = {isa = PBXBuildFile; fileRef = 4360D4B011974C6400ACDF0B /* io.c */; };
+		4380024F1198CD1D002B760D /* ShorterWay.icns in Resources */ = {isa = PBXBuildFile; fileRef = 4380024E1198CD1D002B760D /* ShorterWay.icns */; };
 		4387BA5F117C9C5B00A1F390 /* core.c in Sources */ = {isa = PBXBuildFile; fileRef = 4387BA5E117C9C5B00A1F390 /* core.c */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
@@ -33,6 +34,7 @@
 		4359B1FE11777E2C0045B9DF /* ShorterWayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShorterWayController.h; sourceTree = "<group>"; };
 		4359B1FF11777E2C0045B9DF /* ShorterWayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShorterWayController.m; sourceTree = "<group>"; };
 		4360D4B011974C6400ACDF0B /* io.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = io.c; sourceTree = "<group>"; };
+		4380024E1198CD1D002B760D /* ShorterWay.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ShorterWay.icns; sourceTree = "<group>"; };
 		4387BA5D117C9C5B00A1F390 /* core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = core.h; sourceTree = "<group>"; };
 		4387BA5E117C9C5B00A1F390 /* core.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = core.c; sourceTree = "<group>"; };
 		43BF89D41196EB4F00EDC80A /* io.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = io.h; sourceTree = "<group>"; };
@@ -117,6 +119,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				4380024E1198CD1D002B760D /* ShorterWay.icns */,
 				8D1107310486CEB800E47090 /* ShorterWayGraphic-Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				1DDD58140DA1D0A300B32029 /* MainMenu.xib */,
@@ -180,6 +183,7 @@
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
 				4351A519117CAB9A00A88BE5 /* TODO in Resources */,
+				4380024F1198CD1D002B760D /* ShorterWay.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
