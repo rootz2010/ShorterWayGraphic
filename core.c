@@ -128,42 +128,6 @@ int ** random_graph(int nb_nodes, float completeness, float negative_probability
 	return tableau;
 }
 
-/* function to create a matrix with negative values ! */
-/* int** random_graph_negative(int nb_nodes, float completeness, float negative_probability) {
-	int i, j;
-	
-	int **tableau = (int **) calloc(nb_nodes, sizeof(int *));
-	
-	/* just to have a different configuration each time  */
-	/* srand(time((time_t *)0));
-	
-	/* allocate space for our little matrix */
-	/* for (i=0; i<nb_nodes; i++) {
-		tableau[i] = (int *) calloc(nb_nodes, sizeof(int));
-	}
-	
-	/* generate random arc with its value */
-	/* for (i=0;i<nb_nodes;i++){
-		/* generate the cost of the arc */
-		/* for (j=0; j<nb_nodes; j++) {
-			if (j != i) {
-				/* we fill the value only if we are under the percentage of completeness */
-				/* if (rand()/(RAND_MAX + 1.) < completeness) {
-					tableau[i][j] = (int) ((1 + round(rand()/(RAND_MAX + 1.) * (MAX_LEN - 1))) - MAX_LEN/2);
-				}
-				else {
-					tableau[i][j] = INT_MAX;
-				}
-			}
-			else {
-				tableau[i][i] = 0;
-			}
-		}
-	}
-	
-	return tableau;
-} */
-
 /* function to convert a matrix into a chained list */
 struct chained_list ** convert_matrix(int ** tab, int nb_nodes) {
 	int i, j;

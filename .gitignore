@@ -4,6 +4,7 @@ build/*
 
 # SVN directories
 .svn
+message
 
 # osx noise
 .DS_Store
